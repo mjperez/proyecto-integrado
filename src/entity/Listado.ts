@@ -7,27 +7,27 @@ import { Producto } from "./Producto";
 @Entity({ name: "listados" })
 export class Listado {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @ManyToOne(() => Negocio)
     @JoinColumn({ name: 'negocio_id' })
-    negocio: Negocio;
+    negocio!: Negocio;
 
     @ManyToOne(() => Producto)
     @JoinColumn({ name: 'producto_id' })
-    producto: Producto;
+    producto!: Producto;
 
     // numeric, NUNCA float, para plata
     @Column({ type: 'numeric', precision: 10, scale: 2, nullable: false })
-    precio: number;
+    precio!: number;
 
     // ? opcional: un servicio no tiene stock
     @Column({ type: 'int', nullable: true })
-    stock: number;
+    stock!: number;
 
     @Column({ type: 'varchar', length: 3, default: 'CLP' })
-    moneda: string;
+    moneda!: string;
 
     @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt: Date;
+    updatedAt!: Date;
 }

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { entities } from "../entity";
+import { entities } from "../entity/";
 
 const globalForTypeORM = global as unknown as {
   typeormDataSource: DataSource;
