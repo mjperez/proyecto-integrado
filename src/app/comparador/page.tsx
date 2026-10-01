@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 type Producto = { id_producto: number; nombre: string; marca: string; formato: string };
 type Fila = {
@@ -16,23 +15,23 @@ export default function Comparador() {
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
-    supabase
+    supabaseProductos();
+  }, []);
+
+  async function supabaseProductos() {
+    const { data } = await supabase
       .from("producto")
       .select("id_producto, nombre, marca, formato")
-      .order("nombre")
-      .then(({ data }) => setProductos(data ?? []));
-  }, []);
+      .order("nombre");
+    setProductos((data as unknown as Producto[]) ?? []);
+  }
 
   async function comparar(idProducto: number) {
     setSeleccion(idProducto);
     setCargando(true);
-    // JOIN automático: precio → comercio (por la clave foránea)
-    const { data } = await supabase
-      .from("precio")
-      .select("valor, fecha_registro, comercio(nombre, direccion)")
-      .eq("id_producto", idProducto)
-      .order("valor");
-    setFilas((data ?? []) as unknown as Fila[]);
+    const res = await fetch(`/api/comparador?producto=${idProducto}`);
+    const json = (await res.json()) as { precios: Fila[] };
+    setFilas(json.precios ?? []);
     setCargando(false);
   }
 
@@ -83,3 +82,5 @@ export default function Comparador() {
     </main>
   );
 }
+
+import { supabase } from "@/lib/supabase";
