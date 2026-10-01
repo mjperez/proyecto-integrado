@@ -32,7 +32,7 @@ export default function Comparador() {
       .select("valor, fecha_registro, comercio(nombre, direccion)")
       .eq("id_producto", idProducto)
       .order("valor");
-    setFilas((data as Fila[]) ?? []);
+    setFilas((data ?? []) as unknown as Fila[]);
     setCargando(false);
   }
 
