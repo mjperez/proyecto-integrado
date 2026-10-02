@@ -15,7 +15,7 @@ export default function Comparador() {
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
-    supabaseProductos();
+    supabaseProductos().catch((e) => console.error("Error cargando productos:", e));
   }, []);
 
   async function supabaseProductos() {
@@ -56,12 +56,11 @@ export default function Comparador() {
 
       {cargando && <p>Buscando precios…</p>}
 
-      {filas.map((f, i) => (
+      {filas.map((f) => (
         <div
-          key={i}
-          className={`flex justify-between border rounded p-3 mb-2 ${
-            f.valor === minimo ? "border-green-600 bg-green-50" : ""
-          }`}
+          key={`${f.comercio.nombre}-${f.fecha_registro}`}
+          className={`flex justify-between border rounded p-3 mb-2 ${f.valor === minimo ? "border-green-600 bg-green-50" : ""
+            }`}
         >
           <div>
             <strong>{f.comercio.nombre}</strong>
