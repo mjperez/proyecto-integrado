@@ -7,7 +7,7 @@ export async function GET() {
   const t0 = Date.now();
   let db = "error";
   try {
-    // consulta mínima: solo probamos que la base responde
+    // Prueba de que la base de datos responde
     const { error } = await supabase.from("rol").select("id_rol").limit(1);
     db = error ? "error" : "ok";
   } catch {
