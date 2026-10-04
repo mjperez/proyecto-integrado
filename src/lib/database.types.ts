@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       alias_categoria: {
@@ -68,6 +93,13 @@ export type Database = {
             columns: ["id_comercio"]
             isOneToOne: false
             referencedRelation: "comercio"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "boleta_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_mapa"
             referencedColumns: ["id_comercio"]
           },
         ]
@@ -257,6 +289,13 @@ export type Database = {
             columns: ["id_comercio"]
             isOneToOne: false
             referencedRelation: "comercio"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "precio_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_mapa"
             referencedColumns: ["id_comercio"]
           },
           {
@@ -507,6 +546,36 @@ export type Database = {
         }
         Relationships: []
       }
+      v_comercios_mapa: {
+        Row: {
+          activo: boolean | null
+          direccion: string | null
+          id_comercio: number | null
+          lat: number | null
+          lng: number | null
+          nombre: string | null
+          tipo: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          direccion?: string | null
+          id_comercio?: number | null
+          lat?: never
+          lng?: never
+          nombre?: string | null
+          tipo?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          direccion?: string | null
+          id_comercio?: number | null
+          lat?: never
+          lng?: never
+          nombre?: string | null
+          tipo?: string | null
+        }
+        Relationships: []
+      }
       v_precio_actual: {
         Row: {
           fecha_registro: string | null
@@ -521,6 +590,13 @@ export type Database = {
             columns: ["id_comercio"]
             isOneToOne: false
             referencedRelation: "comercio"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "precio_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_mapa"
             referencedColumns: ["id_comercio"]
           },
           {
@@ -1563,6 +1639,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       productos_tipo_enum: ["producto", "servicio"],
