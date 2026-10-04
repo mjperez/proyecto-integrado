@@ -150,13 +150,13 @@ export default function MapaComercios() {
             {seleccionado && (
                 <div className="mt-4 border rounded p-4">
                     <h2 className="font-bold">{seleccionado.nombre}</h2>
-                    <p className="text-sm text-gray-600 mb-3">
+                    <p className="mb-3 text-sm text-muted-foreground">
                         {seleccionado.tipo} — {seleccionado.direccion}
                     </p>
 
                     <h3 className="font-semibold text-sm mb-1">Precios vigentes</h3>
                     {precios.length === 0 && (
-                        <p className="text-sm text-gray-500">Sin precios registrados todavía.</p>
+                        <p className="text-sm text-muted-foreground">Sin precios registrados todavía.</p>
                     )}
                     <ul className="mb-3">
                         {precios.map((p) => (
@@ -193,7 +193,7 @@ export default function MapaComercios() {
                                     onChange={(e) => setFormValor(e.target.value)}
                                 />
                                 <button
-                                    className="bg-[#004283] text-white rounded px-4"
+                                    className="rounded bg-primary px-4 text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
                                     onClick={guardarPrecio}
                                 >
                                     Guardar
