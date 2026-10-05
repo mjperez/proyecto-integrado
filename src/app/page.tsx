@@ -8,7 +8,7 @@ export default function Home() {
           Observatorio Comunal de Precios
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Municipalidad de Pedro Aguirre Cerda — DIDESE
+          Municipalidad de Pedro Aguirre Cerda - DIDESE
         </p>
       </div>
       <div className="flex gap-3">
