@@ -31,13 +31,13 @@ export default function MapaPage() {
         ) : (
           <details className="relative">
             <summary className="flex cursor-pointer list-none items-center gap-2 rounded bg-primary-foreground/10 px-3 py-1.5 text-sm">
-              {perfil?.rol?.nombre ?? "…"} <span className="text-xs">▼</span>
+              {perfil?.roles?.nombre ?? "…"} <span className="text-xs">▼</span>
             </summary>
             <div className="absolute right-0 z-[1001] mt-2 w-60 rounded border bg-card p-3 text-sm text-card-foreground shadow-lg">
               <p className="font-semibold">{perfil ? "Sesión activa" : "Sin perfil"}</p>
               <p className="text-muted-foreground">{sesion.user.email}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Rol: {perfil?.rol?.nombre ?? "sin asignar"}
+                Rol: {perfil?.roles?.nombre ?? "sin asignar"}
               </p>
               <Link href="/" className="mt-3 block text-primary underline">
                 ← Volver al inicio

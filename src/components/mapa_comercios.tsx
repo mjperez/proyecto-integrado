@@ -20,14 +20,14 @@ type Producto = { id_producto: number; nombre: string; formato: string };
 type PrecioVigente = {
     valor: number;
     fecha_registro: string;
-    producto: { nombre: string; formato: string };
+    productos: { nombre: string; formato: string };
 };
 
-const ROLES_INGESTA = ["Vendedor", "Administrador"];
+const ROLES_INGESTA = ["comercio", "terreno", "administrador"];
 
 export default function MapaComercios() {
     const { perfil } = useAuth();
-    const esIngesta = perfil ? ROLES_INGESTA.includes(perfil.rol?.nombre ?? "") : false;
+    const esIngesta = perfil ? ROLES_INGESTA.includes(perfil.roles?.nombre ?? "") : false;
 
     const divRef = useRef<HTMLDivElement>(null);
     const mapaRef = useRef<L.Map | null>(null);
@@ -107,7 +107,7 @@ export default function MapaComercios() {
         if (!seleccionado) return;
         supabase
             .from("v_precio_actual")
-            .select("valor, fecha_registro, producto(nombre, formato)")
+            .select("valor, fecha_registro, productos(nombre, formato)")
             .eq("id_comercio", seleccionado.id_comercio)
             .then(({ data }) => setPrecios((data as unknown as PrecioVigente[]) ?? []));
     }, [seleccionado]);
@@ -116,7 +116,7 @@ export default function MapaComercios() {
     useEffect(() => {
         if (!esIngesta || !seleccionado) return;
         supabase
-            .from("producto")
+            .from("productos")
             .select("id_producto, nombre, formato")
             .order("nombre")
             .then(({ data }) => setProductos((data as Producto[]) ?? []));
@@ -124,7 +124,7 @@ export default function MapaComercios() {
 
     async function guardarPrecio() {
         if (!seleccionado || !formProducto || formValor === "") return;
-        const { error } = await supabase.from("precio").insert({
+        const { error } = await supabase.from("precios").insert({
             id_producto: formProducto,
             id_comercio: seleccionado.id_comercio,
             valor: Number(formValor),
@@ -138,7 +138,7 @@ export default function MapaComercios() {
         setFormValor("");
         const { data } = await supabase
             .from("v_precio_actual")
-            .select("valor, fecha_registro, producto(nombre, formato)")
+            .select("valor, fecha_registro, productos(nombre, formato)")
             .eq("id_comercio", seleccionado.id_comercio);
         setPrecios((data as unknown as PrecioVigente[]) ?? []);
     }
@@ -160,8 +160,8 @@ export default function MapaComercios() {
                     )}
                     <ul className="mb-3">
                         {precios.map((p) => (
-                            <li key={`${p.producto.nombre}-${p.fecha_registro}`} className="text-sm">
-                                {p.producto.nombre} {p.producto.formato} —{" "}
+                            <li key={`${p.productos.nombre}-${p.fecha_registro}`} className="text-sm">
+                                {p.productos.nombre} {p.productos.formato} —{" "}
                                 <strong>${p.valor.toLocaleString("es-CL")}</strong>
                             </li>
                         ))}
@@ -170,7 +170,7 @@ export default function MapaComercios() {
                     {esIngesta && (
                         <div className="border-t pt-3">
                             <h3 className="font-semibold text-sm mb-2">
-                                Registrar precio (perfil {perfil?.rol?.nombre})
+                                Registrar precio (perfil {perfil?.roles?.nombre})
                             </h3>
                             <div className="flex gap-2">
                                 <select

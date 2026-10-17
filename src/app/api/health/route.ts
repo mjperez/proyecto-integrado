@@ -8,7 +8,7 @@ export async function GET() {
   let db = "error";
   try {
     // Prueba de que la base de datos responde
-    const { error } = await supabase.from("rol").select("id_rol").limit(1);
+    const { error } = await supabase.from("roles").select("id_rol").limit(1);
     db = error ? "error" : "ok";
   } catch {
     db = "error";

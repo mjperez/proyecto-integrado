@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
   }
 
   const { data, error } = await supabase
-    .from("precio")
-    .select("valor, fecha_registro, comercio(nombre, direccion)")
+    .from("precios")
+    .select("valor, fecha_registro, comercios(nombre, direccion)")
     .eq("id_producto", idProducto)
     .order("valor");
 

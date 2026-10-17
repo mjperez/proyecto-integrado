@@ -5,7 +5,7 @@ type Producto = { id_producto: number; nombre: string; marca: string; formato: s
 type Fila = {
   valor: number;
   fecha_registro: string;
-  comercio: { nombre: string; direccion: string };
+  comercios: { nombre: string; direccion: string };
 };
 
 export default function Comparador() {
@@ -20,7 +20,7 @@ export default function Comparador() {
 
   async function supabaseProductos() {
     const { data } = await supabase
-      .from("producto")
+      .from("productos")
       .select("id_producto, nombre, marca, formato")
       .order("nombre");
     setProductos((data as unknown as Producto[]) ?? []);
@@ -58,13 +58,13 @@ export default function Comparador() {
 
       {filas.map((f) => (
         <div
-          key={`${f.comercio.nombre}-${f.fecha_registro}`}
+          key={`${f.comercios.nombre}-${f.fecha_registro}`}
           className={`mb-2 flex justify-between rounded border p-3 ${f.valor === minimo ? "border-pac-verde bg-pac-verde/10" : "border-border"
             }`}
         >
           <div>
-            <strong>{f.comercio.nombre}</strong>
-            <div className="text-sm text-muted-foreground">{f.comercio.direccion}</div>
+            <strong>{f.comercios.nombre}</strong>
+            <div className="text-sm text-muted-foreground">{f.comercios.direccion}</div>
           </div>
           <div className="text-right">
             <strong>${f.valor.toLocaleString("es-CL")}</strong>

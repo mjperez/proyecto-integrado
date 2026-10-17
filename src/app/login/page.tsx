@@ -39,7 +39,7 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-muted-foreground">{sesion.user.email}</p>
           {perfil ? (
             <p className="mt-1 text-sm">
-              Rol: <span className="font-medium">{perfil.rol?.nombre}</span>
+              Rol: <span className="font-medium">{perfil.roles?.nombre}</span>
             </p>
           ) : (
             <p className="mt-3 rounded-md bg-pac-naranjo/10 p-3 text-sm text-pac-naranjo">

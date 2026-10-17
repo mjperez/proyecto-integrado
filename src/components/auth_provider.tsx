@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 
 type Perfil = {
     id_rol: number;
-    rol: { nombre: string } | null;
+    roles: { nombre: string } | null;
 };
 
 type AuthContexto = {
@@ -42,8 +42,8 @@ useEffect(() => {
         return;
     }
     supabase
-        .from("usuario")
-        .select("id_rol, rol(nombre)")
+        .from("usuarios")
+        .select("id_rol, roles(nombre)")
         .eq("auth_uid", sesion.user.id)
         .single()
         .then(({ data }) => {
