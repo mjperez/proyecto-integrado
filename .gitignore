@@ -43,3 +43,9 @@ next-env.d.ts
 
 # mcp credentials
 .mcp-auth/
+
+# borradores de trabajo
+/_borradores_sprint1/
+
+supabase/.temp
+supabase/.branches
