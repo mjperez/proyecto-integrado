@@ -13,6 +13,9 @@ const MapaComercios = dynamic(() => import("@/components/mapa_comercios"), {
 export default function MapaPage() {
   const { sesion, perfil, salir } = useAuth();
   const router = useRouter();
+  const rol = perfil?.roles?.nombre;
+  const puedeIngesta =
+    rol === "comercio" || rol === "terreno" || rol === "administrador";
 
   async function cerrarSesion() {
     await salir();
@@ -42,6 +45,11 @@ export default function MapaPage() {
               <Link href="/" className="mt-3 block text-primary underline">
                 ← Volver al inicio
               </Link>
+              {puedeIngesta && (
+                <Link href="/ingesta" className="mt-2 block text-primary underline">
+                  Carga de precios
+                </Link>
+              )}
               <button
                 onClick={cerrarSesion}
                 className="mt-2 w-full rounded bg-pac-rojo px-3 py-1.5 text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
