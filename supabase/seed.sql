@@ -66,9 +66,7 @@ from (values
 on conflict (nombre, direccion) do nothing;
 
 -- ---------------------------------------------------------------- aliases (US-A2)
--- En el modelo del SDD el alias apunta a categoría, así que solo se
--- cargan sinónimos de categoría. Los sinónimos de producto (marraqueta,
--- pan batido) quedan para el ajuste 0004.
+-- Alias de categoría: sinónimos amplios que agrupan productos.
 insert into public.aliases (alias, id_categoria)
 select v.alias, c.id_categoria
 from (values
@@ -81,6 +79,19 @@ from (values
   ('dulce de leche', 'Azúcar y endulzantes')
 ) as v(alias, categoria)
 join public.categorias c on c.nombre = v.categoria
+on conflict (alias) do nothing;
+
+-- Alias de producto: el ajuste 0004 agregó id_producto y el CHECK
+-- alias_un_solo_destino, así que un alias puede apuntar al producto canónico.
+-- El ejemplo "marraqueta = pan batido" es el que usa la propia historia.
+insert into public.aliases (alias, id_producto)
+select v.alias, p.id_producto
+from (values
+  ('marraqueta',  'Pan corriente (marraqueta)'),
+  ('pan batido',  'Pan corriente (marraqueta)'),
+  ('pan corriente', 'Pan corriente (marraqueta)')
+) as v(alias, producto)
+join public.productos p on p.nombre = v.producto
 on conflict (alias) do nothing;
 
 -- ---------------------------------------------------------------- precios (US-C1)
