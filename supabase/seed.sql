@@ -69,7 +69,7 @@ on conflict (nombre, direccion) do nothing;
 -- En el modelo del SDD el alias apunta a categoría, así que solo se
 -- cargan sinónimos de categoría. Los sinónimos de producto (marraqueta,
 -- pan batido) quedan para el ajuste 0004.
-insert into public.alias_categorias (alias, id_categoria)
+insert into public.aliases (alias, id_categoria)
 select v.alias, c.id_categoria
 from (values
   ('choclo',         'Verduras y tubérculos'),

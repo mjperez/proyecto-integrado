@@ -23,16 +23,16 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "alias_categorias": {
+            "aliases": {
                   Row: {
-                    "alias": string,"id_alias": number,"id_categoria": number
+                    "alias": string,"id_alias": number,"id_categoria": number | null,"id_producto": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "alias": string,"id_alias"?: never,"id_categoria": number
+                    "alias": string,"id_alias"?: never,"id_categoria"?: number | null,"id_producto"?: number | null
                   }
                   Update: {
-                    "alias"?: string,"id_alias"?: never,"id_categoria"?: number
+                    "alias"?: string,"id_alias"?: never,"id_categoria"?: number | null,"id_producto"?: number | null
                   }
                   Relationships: [
                     {
@@ -41,6 +41,12 @@ export type Database = {
 isOneToOne: false
       referencedRelation: "categorias"
       referencedColumns: ["id_categoria"]
+    },{
+      foreignKeyName: "alias_categorias_id_producto_fkey"
+      columns: ["id_producto"]
+isOneToOne: false
+      referencedRelation: "productos"
+      referencedColumns: ["id_producto"]
     }
                   ]
                 },"boletas": {
@@ -71,14 +77,14 @@ isOneToOne: false
                   ]
                 },"categorias": {
                   Row: {
-                    "descripcion": string | null,"id_categoria": number,"nombre": string
+                    "activo": boolean,"descripcion": string | null,"id_categoria": number,"nombre": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "descripcion"?: string | null,"id_categoria"?: never,"nombre": string
+                    "activo"?: boolean,"descripcion"?: string | null,"id_categoria"?: never,"nombre": string
                   }
                   Update: {
-                    "descripcion"?: string | null,"id_categoria"?: never,"nombre"?: string
+                    "activo"?: boolean,"descripcion"?: string | null,"id_categoria"?: never,"nombre"?: string
                   }
                   Relationships: [
                     
@@ -99,14 +105,14 @@ isOneToOne: false
                   ]
                 },"precios": {
                   Row: {
-                    "fecha_registro": string,"id_boleta": string | null,"id_comercio": number,"id_precio": number,"id_producto": number,"valor": number
+                    "fecha_registro": string,"id_boleta": string | null,"id_comercio": number,"id_precio": number,"id_producto": number,"valor": number,"vigente_desde": string,"vigente_hasta": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "fecha_registro"?: string,"id_boleta"?: string | null,"id_comercio": number,"id_precio"?: never,"id_producto": number,"valor": number
+                    "fecha_registro"?: string,"id_boleta"?: string | null,"id_comercio": number,"id_precio"?: never,"id_producto": number,"valor": number,"vigente_desde"?: string,"vigente_hasta"?: string | null
                   }
                   Update: {
-                    "fecha_registro"?: string,"id_boleta"?: string | null,"id_comercio"?: number,"id_precio"?: never,"id_producto"?: number,"valor"?: number
+                    "fecha_registro"?: string,"id_boleta"?: string | null,"id_comercio"?: number,"id_precio"?: never,"id_producto"?: number,"valor"?: number,"vigente_desde"?: string,"vigente_hasta"?: string | null
                   }
                   Relationships: [
                     {
@@ -229,6 +235,38 @@ isOneToOne: false
       referencedColumns: ["id_rol"]
     }
                   ]
+                },"usuarios_comercios": {
+                  Row: {
+                    "created_at": string,"id_comercio": number,"id_usuario": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id_comercio": number,"id_usuario": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id_comercio"?: number,"id_usuario"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "usuarios_comercios_id_comercio_fkey"
+      columns: ["id_comercio"]
+isOneToOne: false
+      referencedRelation: "comercios"
+      referencedColumns: ["id_comercio"]
+    },{
+      foreignKeyName: "usuarios_comercios_id_comercio_fkey"
+      columns: ["id_comercio"]
+isOneToOne: false
+      referencedRelation: "v_comercios_mapa"
+      referencedColumns: ["id_comercio"]
+    },{
+      foreignKeyName: "usuarios_comercios_id_usuario_fkey"
+      columns: ["id_usuario"]
+isOneToOne: false
+      referencedRelation: "usuarios"
+      referencedColumns: ["id_usuario"]
+    }
+                  ]
                 }
           }
           Views: {
@@ -270,7 +308,7 @@ isOneToOne: false
                   ]
                 },"v_precio_actual": {
                   Row: {
-                    "fecha_registro": string | null,"id_comercio": number | null,"id_precio": number | null,"id_producto": number | null,"valor": number | null
+                    "fecha_registro": string | null,"id_comercio": number | null,"id_precio": number | null,"id_producto": number | null,"valor": number | null,"vigente_desde": string | null,"vigente_hasta": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -489,6 +527,9 @@ isOneToOne: false
                            },
 "longtransactionsenabled":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"mi_id_usuario":
+{ Args: Record<PropertyKey, never>; Returns: string
                            },
 "obtener_rol":
 { Args: Record<PropertyKey, never>; Returns: string
