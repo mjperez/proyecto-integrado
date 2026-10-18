@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.17"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       aliases: {
@@ -109,6 +84,13 @@ export type Database = {
             foreignKeyName: "boletas_id_comercio_fkey"
             columns: ["id_comercio"]
             isOneToOne: false
+            referencedRelation: "v_comercios_coordenadas"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "boletas_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
             referencedRelation: "v_comercios_mapa"
             referencedColumns: ["id_comercio"]
           },
@@ -140,6 +122,7 @@ export type Database = {
           activo: boolean
           direccion: string
           id_comercio: number
+          id_matriz: number | null
           nombre: string
           tipo: string
           ubicacion: unknown
@@ -148,6 +131,7 @@ export type Database = {
           activo?: boolean
           direccion: string
           id_comercio?: never
+          id_matriz?: number | null
           nombre: string
           tipo: string
           ubicacion: unknown
@@ -156,11 +140,34 @@ export type Database = {
           activo?: boolean
           direccion?: string
           id_comercio?: never
+          id_matriz?: number | null
           nombre?: string
           tipo?: string
           ubicacion?: unknown
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "comercios_id_matriz_fkey"
+            columns: ["id_matriz"]
+            isOneToOne: false
+            referencedRelation: "comercios"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "comercios_id_matriz_fkey"
+            columns: ["id_matriz"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_coordenadas"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "comercios_id_matriz_fkey"
+            columns: ["id_matriz"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_mapa"
+            referencedColumns: ["id_comercio"]
+          },
+        ]
       }
       precios: {
         Row: {
@@ -212,6 +219,13 @@ export type Database = {
             foreignKeyName: "precios_id_comercio_fkey"
             columns: ["id_comercio"]
             isOneToOne: false
+            referencedRelation: "v_comercios_coordenadas"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "precios_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
             referencedRelation: "v_comercios_mapa"
             referencedColumns: ["id_comercio"]
           },
@@ -226,6 +240,7 @@ export type Database = {
       }
       productos: {
         Row: {
+          activo: boolean
           formato: string
           id_categoria: number
           id_producto: number
@@ -234,6 +249,7 @@ export type Database = {
           unidad: string
         }
         Insert: {
+          activo?: boolean
           formato: string
           id_categoria: number
           id_producto?: never
@@ -242,6 +258,7 @@ export type Database = {
           unidad: string
         }
         Update: {
+          activo?: boolean
           formato?: string
           id_categoria?: number
           id_producto?: never
@@ -409,6 +426,13 @@ export type Database = {
             foreignKeyName: "usuarios_comercios_id_comercio_fkey"
             columns: ["id_comercio"]
             isOneToOne: false
+            referencedRelation: "v_comercios_coordenadas"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "usuarios_comercios_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
             referencedRelation: "v_comercios_mapa"
             referencedColumns: ["id_comercio"]
           },
@@ -465,6 +489,61 @@ export type Database = {
         }
         Relationships: []
       }
+      v_comercios_coordenadas: {
+        Row: {
+          activo: boolean | null
+          direccion: string | null
+          id_comercio: number | null
+          id_matriz: number | null
+          lat: number | null
+          lng: number | null
+          nombre: string | null
+          tipo: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          direccion?: string | null
+          id_comercio?: number | null
+          id_matriz?: number | null
+          lat?: never
+          lng?: never
+          nombre?: string | null
+          tipo?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          direccion?: string | null
+          id_comercio?: number | null
+          id_matriz?: number | null
+          lat?: never
+          lng?: never
+          nombre?: string | null
+          tipo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comercios_id_matriz_fkey"
+            columns: ["id_matriz"]
+            isOneToOne: false
+            referencedRelation: "comercios"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "comercios_id_matriz_fkey"
+            columns: ["id_matriz"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_coordenadas"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "comercios_id_matriz_fkey"
+            columns: ["id_matriz"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_mapa"
+            referencedColumns: ["id_comercio"]
+          },
+        ]
+      }
       v_comercios_mapa: {
         Row: {
           activo: boolean | null
@@ -511,6 +590,13 @@ export type Database = {
             columns: ["id_comercio"]
             isOneToOne: false
             referencedRelation: "comercios"
+            referencedColumns: ["id_comercio"]
+          },
+          {
+            foreignKeyName: "precios_id_comercio_fkey"
+            columns: ["id_comercio"]
+            isOneToOne: false
+            referencedRelation: "v_comercios_coordenadas"
             referencedColumns: ["id_comercio"]
           },
           {
@@ -691,6 +777,24 @@ export type Database = {
         | { Args: { table_name: string }; Returns: string }
       enablelongtransactions: { Args: never; Returns: string }
       equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      fn_payload_auditoria: {
+        Args: {
+          p_accion: string
+          p_fecha: string
+          p_hash_previo: string
+          p_id_usuario: string
+          p_registro_id: number
+          p_tabla: string
+        }
+        Returns: string
+      }
+      fn_verificar_auditoria: {
+        Args: never
+        Returns: {
+          id_registro_roto: number
+          motivo: string
+        }[]
+      }
       geometry: { Args: { "": string }; Returns: unknown }
       geometry_above: {
         Args: { geom1: unknown; geom2: unknown }
@@ -1561,9 +1665,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
