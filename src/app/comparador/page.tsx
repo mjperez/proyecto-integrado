@@ -1,7 +1,14 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+
+// Cliente de navegador con la sesión en cookies, para que el proxy y los
+// Server Components puedan verla.
+const supabase = createClient();
 
 type Producto = { id_producto: number; nombre: string; marca: string; formato: string };
+
 type Fila = {
   valor: number;
   fecha_registro: string;
@@ -15,16 +22,19 @@ export default function Comparador() {
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
-    supabaseProductos().catch((e) => console.error("Error cargando productos:", e));
-  }, []);
-
-  async function supabaseProductos() {
-    const { data } = await supabase
+    supabase
       .from("productos")
       .select("id_producto, nombre, marca, formato")
-      .order("nombre");
-    setProductos((data as unknown as Producto[]) ?? []);
-  }
+      .eq("activo", true)
+      .order("nombre")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Error cargando productos:", error.message);
+          return;
+        }
+        setProductos(data ?? []);
+      });
+  }, []);
 
   async function comparar(idProducto: number) {
     setSeleccion(idProducto);
@@ -59,8 +69,11 @@ export default function Comparador() {
       {filas.map((f) => (
         <div
           key={`${f.comercios.nombre}-${f.fecha_registro}`}
-          className={`mb-2 flex justify-between rounded border p-3 ${f.valor === minimo ? "border-pac-verde bg-pac-verde/10" : "border-border"
-            }`}
+          className={`mb-2 flex justify-between rounded border p-3 ${
+            f.valor === minimo
+              ? "border-pac-verde bg-pac-verde/10"
+              : "border-border"
+          }`}
         >
           <div>
             <strong>{f.comercios.nombre}</strong>
@@ -81,5 +94,3 @@ export default function Comparador() {
     </main>
   );
 }
-
-import { supabase } from "@/lib/supabase";
