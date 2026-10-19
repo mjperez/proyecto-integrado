@@ -129,12 +129,14 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Titulares en Roboto Slab: el municipio carga Roboto + Roboto Slab. */
+  /* El municipio titula en Roboto bold, no en slab: el contraste lo da el
+     peso y la escala, no un segundo alfabeto. El slab queda para las cifras
+     y para el isotipo, donde sí aporta. */
   h1,
   h2,
   h3 {
-    @apply font-slab;
-    letter-spacing: -0.015em;
+    @apply font-sans font-bold;
+    letter-spacing: -0.022em;
   }
 
   h4,

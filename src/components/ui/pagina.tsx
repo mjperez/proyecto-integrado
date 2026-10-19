@@ -107,7 +107,7 @@ export function EstadoVacio({
         className,
       )}
     >
-      <p className="font-slab text-[16px] font-bold text-pac-azul">{titulo}</p>
+      <p className="text-[16px] font-bold text-pac-azul">{titulo}</p>
       <p className="max-w-md text-[14px] leading-relaxed text-pac-tinta-suave">
         {descripcion}
       </p>

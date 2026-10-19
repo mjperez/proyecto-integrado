@@ -101,7 +101,6 @@ export default function Comparador() {
         <Contenedor ancho="amplio">
           <EncabezadoPagina
             miga={[{ etiqueta: "Inicio", href: "/" }, { etiqueta: "Comparador" }]}
-            eyebrow="Consulta pública"
             titulo="Comparador de precios"
             descripcion="Elige un producto del catálogo y revisa cuánto cuesta en cada comercio de la comuna."
           />

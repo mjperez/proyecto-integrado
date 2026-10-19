@@ -32,7 +32,6 @@ export default async function IngestaPage() {
     <Contenedor>
       <EncabezadoPagina
         miga={[{ etiqueta: "Inicio", href: "/" }, { etiqueta: "Carga de precios" }]}
-        eyebrow="Ingesta"
         titulo="Carga de precios"
         descripcion="Elige el método según el volumen: registro individual desde el mapa o planilla completa de la semana."
         acciones={<span className="micro text-pac-tinta-suave">Perfil {rol}</span>}

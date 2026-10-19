@@ -53,7 +53,6 @@ export default async function CargaCsvPage() {
           { etiqueta: "Carga de precios", href: "/ingesta" },
           { etiqueta: "Planilla" },
         ]}
-        eyebrow="Ingesta masiva · US-C2"
         titulo="Carga por planilla"
         descripcion="Sube la planilla semanal de precios. Cada fila se valida por separado y los errores se informan por número de línea, sin abortar el resto de la carga."
       />

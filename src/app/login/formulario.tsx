@@ -109,16 +109,13 @@ export default function Formulario() {
 
   return (
     <div>
-      <Etiqueta className="mb-3 block">Acceso funcionario</Etiqueta>
-      <h1 className="text-[26px] font-bold leading-tight text-pac-azul">
-        Iniciar sesión
-      </h1>
-      <p className="mt-2 text-[14px] leading-relaxed text-pac-tinta-suave">
+      <h1 className="text-[22px] leading-tight text-pac-azul">Iniciar sesión</h1>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-pac-tinta-suave">
         Usa las credenciales entregadas por la Dirección de Desarrollo
         Comunitario.
       </p>
 
-      <form onSubmit={ingresar} className="mt-7 flex flex-col gap-4">
+      <form onSubmit={ingresar} className="mt-6 flex flex-col gap-4">
         <Campo etiqueta="Correo electrónico" para="email" requerido>
           <Entrada
             id="email"

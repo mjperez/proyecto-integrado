@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Pie() {
   return (
@@ -7,14 +8,18 @@ export function Pie() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center bg-white font-slab text-[12px] font-bold leading-none text-pac-azul">
-                PAC
-              </span>
+              <Image
+                src="/escudo_pac.png"
+                alt="Escudo de la Municipalidad de Pedro Aguirre Cerda"
+                width={48}
+                height={48}
+                className="size-12 object-contain"
+              />
               <div>
                 <p className="text-[9px] font-medium uppercase leading-none tracking-[0.18em] text-white/55">
                   Municipalidad de
                 </p>
-                <p className="mt-1 font-slab text-[14px] font-bold leading-none">
+                <p className="mt-1 text-[14px] font-bold leading-none">
                   Pedro Aguirre Cerda
                 </p>
               </div>
