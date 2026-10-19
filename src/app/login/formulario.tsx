@@ -3,8 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useAuth } from "@/components/auth_provider";
+import { Aviso } from "@/components/ui/aviso";
+import { Boton } from "@/components/ui/boton";
+import { Campo, Entrada } from "@/components/ui/campo";
+import { Etiqueta, Insignia } from "@/components/ui/etiqueta";
 
 // Cliente de navegador con la sesión en cookies, para que el proxy y los
 // Server Components puedan verla.
@@ -53,95 +58,109 @@ export default function Formulario() {
 
   if (cargando) {
     return (
-      <main className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
-        Cargando sesión…
-      </main>
+      <div className="flex flex-col gap-3" aria-busy="true">
+        <div className="h-3 w-24 bg-pac-fondo" />
+        <div className="h-10 w-full bg-pac-fondo" />
+        <div className="h-10 w-full bg-pac-fondo" />
+        <div className="h-11 w-full bg-pac-fondo" />
+      </div>
     );
   }
 
   if (sesion) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-pac-gris p-6">
-        <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-lg">
-          <h1 className="text-2xl font-bold text-pac-azul">Sesión iniciada</h1>
-          <p className="mt-2 text-sm text-muted-foreground">{sesion.user.email}</p>
-          {perfil ? (
-            <p className="mt-1 text-sm">
-              Rol: <span className="font-medium">{perfil.roles?.nombre}</span>
-            </p>
-          ) : (
-            <p className="mt-3 rounded-md bg-pac-naranjo/10 p-3 text-sm text-pac-naranjo">
-              Tu cuenta existe en Supabase Auth, pero no tiene fila en la tabla
-              usuario, así que no tiene rol asignado.
-            </p>
-          )}
-          <div className="mt-6 flex flex-col gap-2">
-            <Link
-              href="/mapa"
-              className="rounded bg-primary py-2 text-center font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-            >
-              Ir al mapa
-            </Link>
-            <button
-              onClick={() => salir()}
-              className="rounded border border-pac-rojo py-2 text-sm font-medium text-pac-rojo transition-colors hover:bg-pac-rojo/10"
-            >
-              Cerrar sesión
-            </button>
-          </div>
+      <div>
+        <Etiqueta className="mb-3 block">Sesión iniciada</Etiqueta>
+        <h1 className="text-[26px] font-bold leading-tight text-pac-azul">
+          Ya tienes una sesión abierta
+        </h1>
+        <p className="mt-2 text-[14px] text-pac-tinta-suave">
+          {sesion.user.email}
+        </p>
+
+        <div className="mt-5">
+          <Insignia tono={perfil ? "neutro" : "destacado"}>
+            {perfil?.roles?.nombre ?? "Sin rol asignado"}
+          </Insignia>
         </div>
-      </main>
+
+        {!perfil && (
+          <Aviso tono="alerta" className="mt-5" titulo="Cuenta sin perfil">
+            La cuenta existe en el sistema de acceso, pero no tiene fila en la
+            tabla de usuarios, así que no tiene rol asignado. Pide al
+            administrador que la vincule.
+          </Aviso>
+        )}
+
+        <div className="mt-7 flex flex-col gap-2">
+          <Link
+            href="/mapa"
+            className="inline-flex h-11 w-full items-center justify-center border border-pac-azul bg-pac-azul text-[12px] font-bold uppercase tracking-[0.09em] text-white transition-colors hover:bg-pac-azul-profundo"
+          >
+            Ir al mapa
+          </Link>
+          <Boton variante="peligro" bloque onClick={() => salir()}>
+            Cerrar sesión
+          </Boton>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-pac-gris p-6">
-      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-lg">
-        <h1 className="text-2xl font-bold text-pac-azul">Iniciar Sesión</h1>
-        <p className="mt-1 mb-6 text-sm text-muted-foreground">
-          Observatorio Comunal de Precios
-        </p>
+    <div>
+      <Etiqueta className="mb-3 block">Acceso funcionario</Etiqueta>
+      <h1 className="text-[26px] font-bold leading-tight text-pac-azul">
+        Iniciar sesión
+      </h1>
+      <p className="mt-2 text-[14px] leading-relaxed text-pac-tinta-suave">
+        Usa las credenciales entregadas por la Dirección de Desarrollo
+        Comunitario.
+      </p>
 
-        <form onSubmit={ingresar} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="mb-1 block text-sm font-medium">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
-            />
-          </div>
+      <form onSubmit={ingresar} className="mt-7 flex flex-col gap-4">
+        <Campo etiqueta="Correo electrónico" para="email" requerido>
+          <Entrada
+            id="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </Campo>
 
-          <div>
-            <label htmlFor="password" className="mb-1 block text-sm font-medium">
-              Contraseña
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
-            />
-          </div>
+        <Campo etiqueta="Contraseña" para="password" requerido>
+          <Entrada
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </Campo>
 
-          {error && <p className="text-sm text-pac-rojo">{error}</p>}
+        {error && <Aviso tono="error">{error}</Aviso>}
 
-          <button
-            type="submit"
-            disabled={enviando}
-            className="rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro disabled:opacity-50"
-          >
-            {enviando ? "Ingresando…" : "Ingresar"}
-          </button>
-        </form>
-      </div>
-    </main>
+        <Boton
+          type="submit"
+          disabled={enviando}
+          tamano="lg"
+          bloque
+          className="mt-1"
+        >
+          {enviando ? "Ingresando…" : "Ingresar"}
+        </Boton>
+      </form>
+
+      <Link
+        href="/"
+        className="mt-8 inline-flex items-center gap-1.5 text-[12px] font-medium text-pac-tinta-suave transition-colors hover:text-pac-azul"
+      >
+        <ArrowLeft className="size-3.5" aria-hidden="true" />
+        Volver a la portada
+      </Link>
+    </div>
   );
 }

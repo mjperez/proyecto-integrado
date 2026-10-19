@@ -1,52 +1,79 @@
 import Link from "next/link";
+import { ArrowRight, ClipboardList, Table2 } from "lucide-react";
 import { requerirRol } from "@/lib/auth";
+import { Contenedor, EncabezadoPagina } from "@/components/ui/pagina";
+import { Etiqueta } from "@/components/ui/etiqueta";
+
+export const metadata = { title: "Carga de precios" };
+
+const OPCIONES = [
+  {
+    nombre: "Carga manual",
+    href: "/mapa",
+    desc: "Selecciona un comercio en el mapa y registra los precios uno por uno. Sirve para relevamientos puntuales o para corregir un valor.",
+    detalle: "US-C1",
+    icono: ClipboardList,
+    nota: "Un producto a la vez, con fecha automática.",
+  },
+  {
+    nombre: "Carga por planilla",
+    href: "/ingesta/csv",
+    desc: "Sube la planilla semanal en CSV. Cada fila se valida por separado y los errores se informan por número de línea.",
+    detalle: "US-C2",
+    icono: Table2,
+    nota: "Carga masiva con informe de errores.",
+  },
+];
 
 export default async function IngestaPage() {
   const { rol } = await requerirRol("comercio", "terreno", "administrador");
 
-  const opciones = [
-    {
-      nombre: "Carga manual",
-      href: "/mapa",
-      desc: "Selecciona un comercio en el mapa y registra los precios uno por uno.",
-      detalle: "US-C1",
-    },
-    {
-      nombre: "Carga por planilla",
-      href: "/ingesta/csv",
-      desc: "Sube un CSV semanal. Se valida fila por fila y se informan los errores por línea.",
-      detalle: "US-C2",
-    },
-  ];
-
   return (
-    <main className="mx-auto min-h-screen w-full max-w-3xl bg-background p-6">
-      <Link href="/" className="text-sm text-pac-celeste transition-colors hover:underline">
-        ← Volver al inicio
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Carga de precios</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Sesión con perfil <span className="font-medium">{rol}</span>. Elige cómo
-        quieres registrar los precios.
-      </p>
+    <Contenedor>
+      <EncabezadoPagina
+        miga={[{ etiqueta: "Inicio", href: "/" }, { etiqueta: "Carga de precios" }]}
+        eyebrow="Ingesta"
+        titulo="Carga de precios"
+        descripcion="Elige el método según el volumen: registro individual desde el mapa o planilla completa de la semana."
+        acciones={<span className="micro text-pac-tinta-suave">Perfil {rol}</span>}
+      />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {opciones.map((o) => (
-          <Link
-            key={o.nombre}
-            href={o.href}
-            className="rounded-lg border border-border bg-card p-5 transition-colors hover:border-pac-celeste"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-pac-azul">{o.nombre}</h2>
-              <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                {o.detalle}
-              </span>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">{o.desc}</p>
-          </Link>
-        ))}
+      <div className="grid gap-px border border-pac-linea bg-pac-linea sm:grid-cols-2 mt-8 mb-14">
+        {OPCIONES.map((o) => {
+          const Icono = o.icono;
+          return (
+            <Link
+              key={o.nombre}
+              href={o.href}
+              className="group relative flex flex-col bg-white p-6 transition-colors duration-150 hover:bg-pac-fondo/50"
+            >
+              <span className="absolute inset-x-0 top-0 h-[3px] bg-pac-rojo opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+
+              <div className="mb-6 flex items-start justify-between">
+                <Icono
+                  className="size-7 text-pac-azul"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+                <Etiqueta>{o.detalle}</Etiqueta>
+              </div>
+
+              <h2 className="text-[18px] font-bold text-pac-azul">{o.nombre}</h2>
+              <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-pac-tinta-suave">
+                {o.desc}
+              </p>
+
+              <div className="mt-6 flex items-center justify-between border-t border-pac-linea pt-3">
+                <span className="text-[11px] text-pac-tinta-suave">{o.nota}</span>
+                <ArrowRight
+                  className="size-4 text-pac-linea-fuerte transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-pac-rojo"
+                  aria-hidden="true"
+                />
+              </div>
+            </Link>
+          );
+        })}
       </div>
-    </main>
+    </Contenedor>
   );
 }

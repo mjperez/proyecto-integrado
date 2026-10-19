@@ -1,6 +1,11 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { crearAlias, eliminarAlias } from "./acciones";
+import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
+import { Panel, PanelCabecera } from "@/components/ui/panel";
+import { Aviso } from "@/components/ui/aviso";
+import { Boton, BotonEnlace } from "@/components/ui/boton";
+import { Campo, Entrada, Selector } from "@/components/ui/campo";
+import { Insignia } from "@/components/ui/etiqueta";
 
 const ERRORES: Record<string, string> = {
   alias: "El alias no puede estar vacío ni superar los 100 caracteres.",
@@ -8,8 +13,7 @@ const ERRORES: Record<string, string> = {
   duplicado: "Ese alias ya existe. Cada alias apunta a un solo destino.",
 };
 
-const CAMPO =
-  "w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30";
+export const metadata = { title: "Aliases" };
 
 export default async function AliasesPage({
   searchParams,
@@ -26,7 +30,11 @@ export default async function AliasesPage({
         "id_alias, alias, id_categoria, id_producto, categorias(nombre), productos(nombre, marca, formato)",
       )
       .order("alias"),
-    supabase.from("categorias").select("id_categoria, nombre").eq("activo", true).order("nombre"),
+    supabase
+      .from("categorias")
+      .select("id_categoria, nombre")
+      .eq("activo", true)
+      .order("nombre"),
     supabase
       .from("productos")
       .select("id_producto, nombre, marca, formato")
@@ -37,132 +45,170 @@ export default async function AliasesPage({
   const lista = aliases.data ?? [];
   const categoriasActivas = categorias.data ?? [];
   const productosActivos = productos.data ?? [];
-  const sinDestinos = categoriasActivas.length === 0 && productosActivos.length === 0;
+  const sinDestinos =
+    categoriasActivas.length === 0 && productosActivos.length === 0;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-4xl bg-background p-6">
-      <Link
-        href="/admin"
-        className="text-sm text-pac-celeste transition-colors hover:underline"
-      >
-        ← Volver al panel
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Aliases</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Sinónimos que apuntan a una categoría o a un producto canónico (US-A2).
-      </p>
+    <Contenedor>
+      <EncabezadoPagina
+        miga={[
+          { etiqueta: "Inicio", href: "/" },
+          { etiqueta: "Panel", href: "/admin" },
+          { etiqueta: "Aliases" },
+        ]}
+        eyebrow="Normalización · US-A2"
+        titulo="Aliases"
+        descripcion={`${lista.length} sinónimos registrados. Cada alias resuelve un nombre del habla local contra una categoría o un producto canónico.`}
+      />
 
       {error && ERRORES[error] && (
-        <p className="mb-4 rounded border border-pac-rojo bg-pac-rojo/10 p-3 text-sm text-pac-rojo">
+        <Aviso tono="error" className="mt-6">
           {ERRORES[error]}
-        </p>
+        </Aviso>
       )}
 
-      {sinDestinos ? (
-        <p className="mb-4 rounded border border-pac-naranjo bg-pac-naranjo/10 p-3 text-sm text-pac-naranjo">
-          No hay categorías ni productos activos. Crea alguno antes de agregar aliases.
-        </p>
-      ) : (
-        <form
-          action={crearAlias}
-          className="mb-8 rounded-lg border border-border bg-card p-4"
-        >
-          <h2 className="mb-3 font-semibold">Nuevo alias</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 text-sm">
-              Alias
-              <input
-                name="alias"
-                required
-                maxLength={100}
-                placeholder="marraqueta"
-                className={CAMPO}
+      <div className="mt-6 grid gap-6 pb-14 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:items-start">
+        <div className="order-2 lg:order-1 lg:sticky lg:top-32">
+          {sinDestinos ? (
+            <Aviso tono="alerta" titulo="No hay destinos disponibles">
+              Un alias debe apuntar a una categoría o a un producto. Crea uno
+              primero.
+              <div className="mt-3 flex flex-wrap gap-2">
+                <BotonEnlace href="/admin/categorias" tamano="sm" variante="contorno">
+                  Categorías
+                </BotonEnlace>
+                <BotonEnlace href="/admin/productos" tamano="sm" variante="contorno">
+                  Productos
+                </BotonEnlace>
+              </div>
+            </Aviso>
+          ) : (
+            <Panel acento="azul">
+              <PanelCabecera
+                titulo="Nuevo alias"
+                descripcion="El nombre tal como lo escribe o lo dice el vecino."
               />
-            </label>
+              <form action={crearAlias} className="flex flex-col gap-3.5 p-5">
+                <Campo
+                  etiqueta="Alias"
+                  para="alias"
+                  requerido
+                  ayuda="Máximo 100 caracteres."
+                >
+                  <Entrada
+                    id="alias"
+                    name="alias"
+                    required
+                    maxLength={100}
+                    placeholder="marraqueta"
+                  />
+                </Campo>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Apunta a
-              <select name="destino" required defaultValue="" className={CAMPO}>
-                <option value="" disabled>
-                  Selecciona un destino
-                </option>
-                {categoriasActivas.length > 0 && (
-                  <optgroup label="Categorías">
-                    {categoriasActivas.map((c) => (
-                      <option key={`c-${c.id_categoria}`} value={`categoria:${c.id_categoria}`}>
-                        {c.nombre}
-                      </option>
-                    ))}
-                  </optgroup>
-                )}
-                {productosActivos.length > 0 && (
-                  <optgroup label="Productos">
-                    {productosActivos.map((p) => (
-                      <option key={`p-${p.id_producto}`} value={`producto:${p.id_producto}`}>
-                        {p.nombre} · {p.marca} · {p.formato}
-                      </option>
-                    ))}
-                  </optgroup>
-                )}
-              </select>
-            </label>
+                <Campo etiqueta="Apunta a" para="destino" requerido>
+                  <Selector id="destino" name="destino" required defaultValue="">
+                    <option value="" disabled>
+                      Selecciona un destino
+                    </option>
+                    {categoriasActivas.length > 0 && (
+                      <optgroup label="Categorías">
+                        {categoriasActivas.map((c) => (
+                          <option
+                            key={`c-${c.id_categoria}`}
+                            value={`categoria:${c.id_categoria}`}
+                          >
+                            {c.nombre}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {productosActivos.length > 0 && (
+                      <optgroup label="Productos">
+                        {productosActivos.map((p) => (
+                          <option
+                            key={`p-${p.id_producto}`}
+                            value={`producto:${p.id_producto}`}
+                          >
+                            {p.nombre} · {p.marca} · {p.formato}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                  </Selector>
+                </Campo>
+
+                <Boton type="submit" bloque className="mt-1">
+                  Crear alias
+                </Boton>
+              </form>
+            </Panel>
+          )}
+        </div>
+
+        <section className="order-1 min-w-0 lg:order-2">
+          <div className="mb-2 flex items-baseline justify-between">
+            <h2 className="text-[15px] font-bold text-pac-tinta">
+              Sinónimos registrados
+            </h2>
+            <span className="micro text-pac-tinta-suave">{lista.length} filas</span>
           </div>
 
-          <button
-            type="submit"
-            className="mt-4 w-full rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-          >
-            Crear
-          </button>
-        </form>
-      )}
-
-      <ul className="flex flex-col gap-2">
-        {lista.map((a) => (
-          <li
-            key={a.id_alias}
-            className="flex flex-wrap items-center justify-between gap-3 rounded border border-border bg-card p-3"
-          >
-            <div>
-              <strong>{a.alias}</strong>
-              <span className="ml-2 text-sm text-muted-foreground">→</span>
-              {a.id_categoria !== null ? (
-                <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                  categoría: {a.categorias?.nombre ?? `#${a.id_categoria}`}
-                </span>
-              ) : (
-                <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                  producto:{" "}
-                  {a.productos
-                    ? `${a.productos.nombre} · ${a.productos.marca} · ${a.productos.formato}`
-                    : `#${a.id_producto}`}
-                </span>
-              )}
-            </div>
-
-            <div className="flex gap-2">
-              <Link
-                href={`/admin/aliases/${a.id_alias}/editar`}
-                className="rounded border border-border px-3 py-1 text-sm font-medium transition-colors hover:bg-muted"
-              >
-                Editar
-              </Link>
-              <form action={eliminarAlias}>
-                <input type="hidden" name="id" value={a.id_alias} />
-                <button
-                  type="submit"
-                  className="rounded border border-pac-rojo px-3 py-1 text-sm font-medium text-pac-rojo transition-colors hover:bg-pac-rojo/10"
+          {lista.length === 0 ? (
+            <EstadoVacio
+              titulo="No hay aliases todavía"
+              descripcion="Los aliases permiten que una búsqueda escrita como se habla en la comuna encuentre el producto correcto del catálogo."
+            />
+          ) : (
+            <ul className="divide-y divide-pac-linea border-y border-pac-linea bg-white">
+              {lista.map((a) => (
+                <li
+                  key={a.id_alias}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3"
                 >
-                  Eliminar
-                </button>
-              </form>
-            </div>
-          </li>
-        ))}
-        {lista.length === 0 && (
-          <p className="text-sm text-muted-foreground">No hay aliases todavía.</p>
-        )}
-      </ul>
-    </main>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[14px] font-bold leading-snug text-pac-tinta">
+                      {a.alias}
+                    </p>
+                    <p className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px] text-pac-tinta-suave">
+                      <span aria-hidden="true">→</span>
+                      {a.id_categoria !== null ? (
+                        <>
+                          <Insignia>categoría</Insignia>
+                          <span>{a.categorias?.nombre ?? `#${a.id_categoria}`}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Insignia>producto</Insignia>
+                          <span>
+                            {a.productos
+                              ? `${a.productos.nombre} · ${a.productos.marca} · ${a.productos.formato}`
+                              : `#${a.id_producto}`}
+                          </span>
+                        </>
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="flex shrink-0 gap-2">
+                    <BotonEnlace
+                      href={`/admin/aliases/${a.id_alias}/editar`}
+                      tamano="sm"
+                      variante="contorno"
+                    >
+                      Editar
+                    </BotonEnlace>
+                    <form action={eliminarAlias}>
+                      <input type="hidden" name="id" value={a.id_alias} />
+                      <Boton type="submit" tamano="sm" variante="peligro">
+                        Eliminar
+                      </Boton>
+                    </form>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </Contenedor>
   );
 }

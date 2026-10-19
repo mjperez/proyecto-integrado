@@ -1,10 +1,12 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { UNIDADES_PRODUCTO } from "@/lib/unidades_producto";
 import { actualizarProducto } from "../../acciones";
+import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
+import { Panel } from "@/components/ui/panel";
+import { Boton, BotonEnlace } from "@/components/ui/boton";
+import { Campo, Casilla, Entrada, Selector } from "@/components/ui/campo";
 
-const CAMPO =
-  "w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30";
+export const metadata = { title: "Editar producto" };
 
 export default async function EditarProductoPage({
   params,
@@ -25,12 +27,19 @@ export default async function EditarProductoPage({
 
   if (!producto) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-xl bg-background p-6">
-        <p>Producto no encontrado.</p>
-        <Link href="/admin/productos" className="text-sm text-pac-celeste hover:underline">
-          ← Volver
-        </Link>
-      </main>
+      <Contenedor ancho="angosto">
+        <div className="py-14">
+          <EstadoVacio
+            titulo="Producto no encontrado"
+            descripcion="El identificador de la URL no corresponde a ningún producto del catálogo."
+            accion={
+              <BotonEnlace href="/admin/productos" variante="contorno" tamano="sm">
+                Volver al catálogo
+              </BotonEnlace>
+            }
+          />
+        </div>
+      </Contenedor>
     );
   }
 
@@ -47,89 +56,95 @@ export default async function EditarProductoPage({
     : [...UNIDADES_PRODUCTO, producto.unidad];
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-xl bg-background p-6">
-      <Link
-        href="/admin/productos"
-        className="text-sm text-pac-celeste transition-colors hover:underline"
-      >
-        ← Volver
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Editar producto</h1>
+    <Contenedor ancho="angosto">
+      <EncabezadoPagina
+        miga={[
+          { etiqueta: "Inicio", href: "/" },
+          { etiqueta: "Panel", href: "/admin" },
+          { etiqueta: "Productos", href: "/admin/productos" },
+          { etiqueta: "Editar" },
+        ]}
+        eyebrow={`Producto #${producto.id_producto}`}
+        titulo="Editar producto"
+        descripcion="Los cambios sobre el catálogo quedan registrados en la cadena de auditoría."
+      />
 
-      <form
-        action={actualizarProducto}
-        className="mt-4 rounded-lg border border-border bg-card p-4"
-      >
-        <input type="hidden" name="id" value={producto.id_producto} />
+      <Panel acento="azul" className="my-8">
+        <form action={actualizarProducto}>
+          <input type="hidden" name="id" value={producto.id_producto} />
 
-        <div className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1 text-sm">
-            Nombre
-            <input
-              name="nombre"
-              required
-              defaultValue={producto.nombre}
-              className={CAMPO}
-            />
-          </label>
-
-          <div className="grid grid-cols-2 gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              Marca
-              <input name="marca" required defaultValue={producto.marca} className={CAMPO} />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm">
-              Formato
-              <input
-                name="formato"
+          <div className="flex flex-col gap-4 p-5">
+            <Campo etiqueta="Nombre" para="nombre" requerido>
+              <Entrada
+                id="nombre"
+                name="nombre"
                 required
-                defaultValue={producto.formato}
-                className={CAMPO}
+                defaultValue={producto.nombre}
               />
-            </label>
+            </Campo>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Campo etiqueta="Marca" para="marca" requerido>
+                <Entrada id="marca" name="marca" required defaultValue={producto.marca} />
+              </Campo>
+              <Campo etiqueta="Formato" para="formato" requerido>
+                <Entrada
+                  id="formato"
+                  name="formato"
+                  required
+                  defaultValue={producto.formato}
+                />
+              </Campo>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Campo etiqueta="Unidad" para="unidad" requerido>
+                <Selector
+                  id="unidad"
+                  name="unidad"
+                  required
+                  defaultValue={producto.unidad}
+                >
+                  {unidades.map((u) => (
+                    <option key={u} value={u}>
+                      {u}
+                    </option>
+                  ))}
+                </Selector>
+              </Campo>
+
+              <Campo etiqueta="Categoría" para="id_categoria" requerido>
+                <Selector
+                  id="id_categoria"
+                  name="id_categoria"
+                  required
+                  defaultValue={producto.id_categoria}
+                >
+                  {opcionesCategoria.map((c) => (
+                    <option key={c.id_categoria} value={c.id_categoria}>
+                      {c.nombre}
+                      {c.activo ? "" : " (inactiva)"}
+                    </option>
+                  ))}
+                </Selector>
+              </Campo>
+            </div>
+
+            <Casilla
+              etiqueta="Activo"
+              name="activo"
+              defaultChecked={producto.activo}
+            />
           </div>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Unidad
-            <select name="unidad" required defaultValue={producto.unidad} className={CAMPO}>
-              {unidades.map((u) => (
-                <option key={u} value={u}>
-                  {u}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            Categoría
-            <select
-              name="id_categoria"
-              required
-              defaultValue={producto.id_categoria}
-              className={CAMPO}
-            >
-              {opcionesCategoria.map((c) => (
-                <option key={c.id_categoria} value={c.id_categoria}>
-                  {c.nombre}
-                  {c.activo ? "" : " (inactiva)"}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="activo" defaultChecked={producto.activo} /> Activo
-          </label>
-
-          <button
-            type="submit"
-            className="rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-          >
-            Guardar
-          </button>
-        </div>
-      </form>
-    </main>
+          <div className="flex flex-wrap justify-end gap-2 border-t border-pac-linea bg-pac-fondo/50 px-5 py-3.5">
+            <BotonEnlace href="/admin/productos" variante="fantasma">
+              Cancelar
+            </BotonEnlace>
+            <Boton type="submit">Guardar cambios</Boton>
+          </div>
+        </form>
+      </Panel>
+    </Contenedor>
   );
 }

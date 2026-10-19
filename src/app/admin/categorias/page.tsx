@@ -1,6 +1,13 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { crearCategoria, desactivarCategoria } from "./acciones";
+import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
+import { Panel, PanelCabecera } from "@/components/ui/panel";
+import { Aviso } from "@/components/ui/aviso";
+import { Boton, BotonEnlace } from "@/components/ui/boton";
+import { Campo, Casilla, Entrada } from "@/components/ui/campo";
+import { Insignia } from "@/components/ui/etiqueta";
+
+export const metadata = { title: "Categorías" };
 
 export default async function CategoriasPage({
   searchParams,
@@ -14,98 +21,123 @@ export default async function CategoriasPage({
     .select("id_categoria, nombre, descripcion, activo")
     .order("nombre");
 
+  const lista = categorias ?? [];
+  const activas = lista.filter((c) => c.activo).length;
+
   return (
-    <main className="mx-auto min-h-screen w-full max-w-3xl bg-background p-6">
-      <Link
-        href="/admin"
-        className="text-sm text-pac-celeste transition-colors hover:underline"
-      >
-        ← Volver al panel
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Categorías</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Catálogo maestro de categorías de productos (US-A3).
-      </p>
+    <Contenedor>
+      <EncabezadoPagina
+        miga={[
+          { etiqueta: "Inicio", href: "/" },
+          { etiqueta: "Panel", href: "/admin" },
+          { etiqueta: "Categorías" },
+        ]}
+        eyebrow="Catálogo maestro · US-A3"
+        titulo="Categorías"
+        descripcion={`${lista.length} categorías registradas, ${activas} activas. Agrupan el catálogo y sirven de destino para los aliases.`}
+      />
 
       {error === "duplicado" && (
-        <p className="mb-4 rounded border border-pac-rojo bg-pac-rojo/10 p-3 text-sm text-pac-rojo">
+        <Aviso tono="error" className="mt-6">
           Ya existe una categoría con ese nombre.
-        </p>
+        </Aviso>
       )}
 
-      <form
-        action={crearCategoria}
-        className="mb-8 rounded-lg border border-border bg-card p-4"
-      >
-        <h2 className="mb-3 font-semibold">Nueva categoría</h2>
-        <div className="flex flex-col gap-3">
-          <input
-            name="nombre"
-            required
-            placeholder="Nombre"
-            className="w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
-          />
-          <input
-            name="descripcion"
-            placeholder="Descripción (opcional)"
-            className="w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
-          />
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="activo" defaultChecked /> Activa
-          </label>
-          <button
-            type="submit"
-            className="rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-          >
-            Crear
-          </button>
-        </div>
-      </form>
+      <div className="mt-6 grid gap-6 pb-14 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:items-start">
+        <div className="order-2 lg:order-1 lg:sticky lg:top-32">
+          <Panel acento="azul">
+            <PanelCabecera
+              titulo="Nueva categoría"
+              descripcion="Nombre visible en el comparador público."
+            />
+            <form action={crearCategoria} className="flex flex-col gap-3.5 p-5">
+              <Campo etiqueta="Nombre" para="nombre" requerido>
+                <Entrada
+                  id="nombre"
+                  name="nombre"
+                  required
+                  placeholder="Panadería y pastas"
+                />
+              </Campo>
 
-      <ul className="flex flex-col gap-2">
-        {categorias?.map((c) => (
-          <li
-            key={c.id_categoria}
-            className="flex items-center justify-between rounded border border-border bg-card p-3"
-          >
-            <div>
-              <strong>{c.nombre}</strong>
-              <span
-                className={`ml-2 rounded px-1.5 py-0.5 text-xs ${
-                  c.activo
-                    ? "bg-pac-verde/10 text-pac-verde"
-                    : "bg-pac-naranjo/10 text-pac-naranjo"
-                }`}
+              <Campo
+                etiqueta="Descripción"
+                para="descripcion"
+                ayuda="Opcional. Aparece como apoyo en la ficha de la categoría."
               >
-                {c.activo ? "activa" : "inactiva"}
-              </span>
-              {c.descripcion && (
-                <div className="text-sm text-muted-foreground">{c.descripcion}</div>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <Link
-                href={`/admin/categorias/${c.id_categoria}/editar`}
-                className="rounded border border-border px-3 py-1 text-sm font-medium transition-colors hover:bg-muted"
-              >
-                Editar
-              </Link>
-              <form action={desactivarCategoria}>
-                <input type="hidden" name="id" value={c.id_categoria} />
-                <button
-                  type="submit"
-                  className="rounded border border-pac-rojo px-3 py-1 text-sm font-medium text-pac-rojo transition-colors hover:bg-pac-rojo/10"
+                <Entrada
+                  id="descripcion"
+                  name="descripcion"
+                  placeholder="Productos de panadería y masas"
+                />
+              </Campo>
+
+              <Casilla etiqueta="Activa" name="activo" defaultChecked />
+
+              <Boton type="submit" bloque className="mt-1">
+                Crear categoría
+              </Boton>
+            </form>
+          </Panel>
+        </div>
+
+        <section className="order-1 min-w-0 lg:order-2">
+          <div className="mb-2 flex items-baseline justify-between">
+            <h2 className="text-[15px] font-bold text-pac-tinta">
+              Categorías registradas
+            </h2>
+            <span className="micro text-pac-tinta-suave">{lista.length} filas</span>
+          </div>
+
+          {lista.length === 0 ? (
+            <EstadoVacio
+              titulo="No hay categorías todavía"
+              descripcion="La categoría es el primer eslabón del catálogo: sin ella no se pueden crear productos ni aliases."
+            />
+          ) : (
+            <ul className="divide-y divide-pac-linea border-y border-pac-linea bg-white">
+              {lista.map((c) => (
+                <li
+                  key={c.id_categoria}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3"
                 >
-                  Desactivar
-                </button>
-              </form>
-            </div>
-          </li>
-        ))}
-        {categorias?.length === 0 && (
-          <p className="text-sm text-muted-foreground">No hay categorías todavía.</p>
-        )}
-      </ul>
-    </main>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-[14px] font-bold leading-snug text-pac-tinta">
+                        {c.nombre}
+                      </p>
+                      <Insignia tono={c.activo ? "activo" : "inactivo"}>
+                        {c.activo ? "Activa" : "Inactiva"}
+                      </Insignia>
+                    </div>
+                    {c.descripcion && (
+                      <p className="mt-1 text-[12px] text-pac-tinta-suave">
+                        {c.descripcion}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex shrink-0 gap-2">
+                    <BotonEnlace
+                      href={`/admin/categorias/${c.id_categoria}/editar`}
+                      tamano="sm"
+                      variante="contorno"
+                    >
+                      Editar
+                    </BotonEnlace>
+                    <form action={desactivarCategoria}>
+                      <input type="hidden" name="id" value={c.id_categoria} />
+                      <Boton type="submit" tamano="sm" variante="peligro">
+                        Desactivar
+                      </Boton>
+                    </form>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </Contenedor>
   );
 }

@@ -1,7 +1,12 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { UNIDADES_PRODUCTO } from "@/lib/unidades_producto";
 import { crearProducto, desactivarProducto } from "./acciones";
+import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
+import { Panel, PanelCabecera } from "@/components/ui/panel";
+import { Aviso } from "@/components/ui/aviso";
+import { Boton, BotonEnlace } from "@/components/ui/boton";
+import { Campo, Casilla, Entrada, Selector } from "@/components/ui/campo";
+import { Insignia } from "@/components/ui/etiqueta";
 
 const ERRORES: Record<string, string> = {
   incompleto: "Nombre, marca y formato son obligatorios.",
@@ -11,8 +16,7 @@ const ERRORES: Record<string, string> = {
     "Ya existe un producto con ese nombre, marca, formato y unidad. Si lo retiraste, reactívalo desde su ficha.",
 };
 
-const CAMPO =
-  "w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30";
+export const metadata = { title: "Productos" };
 
 export default async function ProductosPage({
   searchParams,
@@ -36,153 +40,173 @@ export default async function ProductosPage({
 
   const lista = productos.data ?? [];
   const categoriasActivas = categorias.data ?? [];
+  const activos = lista.filter((p) => p.activo).length;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-4xl bg-background p-6">
-      <Link
-        href="/admin"
-        className="text-sm text-pac-celeste transition-colors hover:underline"
-      >
-        ← Volver al panel
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Productos</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Catálogo maestro de productos con su categoría canónica (US-A1).
-      </p>
+    <Contenedor>
+      <EncabezadoPagina
+        miga={[
+          { etiqueta: "Inicio", href: "/" },
+          { etiqueta: "Panel", href: "/admin" },
+          { etiqueta: "Productos" },
+        ]}
+        eyebrow="Catálogo maestro · US-A1"
+        titulo="Productos"
+        descripcion={`${lista.length} productos registrados, ${activos} activos. Cada producto se identifica por nombre, marca, formato y unidad.`}
+      />
 
       {error && ERRORES[error] && (
-        <p className="mb-4 rounded border border-pac-rojo bg-pac-rojo/10 p-3 text-sm text-pac-rojo">
+        <Aviso tono="error" className="mt-6">
           {ERRORES[error]}
-        </p>
+        </Aviso>
       )}
 
-      {categoriasActivas.length === 0 ? (
-        <p className="mb-4 rounded border border-pac-naranjo bg-pac-naranjo/10 p-3 text-sm text-pac-naranjo">
-          No hay categorías activas. Crea una en{" "}
-          <Link href="/admin/categorias" className="font-medium underline">
-            Categorías
-          </Link>{" "}
-          antes de dar de alta productos.
-        </p>
-      ) : (
-        <form
-          action={crearProducto}
-          className="mb-8 rounded-lg border border-border bg-card p-4"
-        >
-          <h2 className="mb-3 font-semibold">Nuevo producto</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Nombre
-              <input
-                name="nombre"
-                required
-                placeholder="Pan corriente (marraqueta)"
-                className={CAMPO}
+      <div className="mt-6 grid gap-6 pb-14 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:items-start">
+        {/* Alta */}
+        <div className="order-2 lg:order-1 lg:sticky lg:top-32">
+          {categoriasActivas.length === 0 ? (
+            <Aviso tono="alerta" titulo="Falta el primer paso">
+              No hay categorías activas. Crea una antes de dar de alta
+              productos.
+              <div className="mt-3">
+                <BotonEnlace href="/admin/categorias" tamano="sm" variante="contorno">
+                  Ir a categorías
+                </BotonEnlace>
+              </div>
+            </Aviso>
+          ) : (
+            <Panel acento="azul">
+              <PanelCabecera
+                titulo="Nuevo producto"
+                descripcion="Se incorpora al catálogo con estado activo."
               />
-            </label>
+              <form action={crearProducto} className="flex flex-col gap-3.5 p-5">
+                <Campo etiqueta="Nombre" para="nombre" requerido>
+                  <Entrada
+                    id="nombre"
+                    name="nombre"
+                    required
+                    placeholder="Pan corriente (marraqueta)"
+                  />
+                </Campo>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Marca
-              <input name="marca" required placeholder="sin marca" className={CAMPO} />
-            </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <Campo etiqueta="Marca" para="marca" requerido>
+                    <Entrada
+                      id="marca"
+                      name="marca"
+                      required
+                      placeholder="sin marca"
+                    />
+                  </Campo>
+                  <Campo etiqueta="Formato" para="formato" requerido>
+                    <Entrada id="formato" name="formato" required placeholder="1 kg" />
+                  </Campo>
+                </div>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Formato
-              <input name="formato" required placeholder="1 kg" className={CAMPO} />
-            </label>
+                <Campo etiqueta="Unidad" para="unidad" requerido>
+                  <Selector id="unidad" name="unidad" required defaultValue="">
+                    <option value="" disabled>
+                      Selecciona una unidad
+                    </option>
+                    {UNIDADES_PRODUCTO.map((u) => (
+                      <option key={u} value={u}>
+                        {u}
+                      </option>
+                    ))}
+                  </Selector>
+                </Campo>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Unidad
-              <select name="unidad" required defaultValue="" className={CAMPO}>
-                <option value="" disabled>
-                  Selecciona una unidad
-                </option>
-                {UNIDADES_PRODUCTO.map((u) => (
-                  <option key={u} value={u}>
-                    {u}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <Campo etiqueta="Categoría" para="id_categoria" requerido>
+                  <Selector
+                    id="id_categoria"
+                    name="id_categoria"
+                    required
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      Selecciona una categoría
+                    </option>
+                    {categoriasActivas.map((c) => (
+                      <option key={c.id_categoria} value={c.id_categoria}>
+                        {c.nombre}
+                      </option>
+                    ))}
+                  </Selector>
+                </Campo>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Categoría
-              <select name="id_categoria" required defaultValue="" className={CAMPO}>
-                <option value="" disabled>
-                  Selecciona una categoría
-                </option>
-                {categoriasActivas.map((c) => (
-                  <option key={c.id_categoria} value={c.id_categoria}>
-                    {c.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <Casilla etiqueta="Activo" name="activo" defaultChecked />
+
+                <Boton type="submit" bloque className="mt-1">
+                  Crear producto
+                </Boton>
+              </form>
+            </Panel>
+          )}
+        </div>
+
+        {/* Listado */}
+        <section className="order-1 min-w-0 lg:order-2">
+          <div className="mb-2 flex items-baseline justify-between">
+            <h2 className="text-[15px] font-bold text-pac-tinta">
+              Catálogo registrado
+            </h2>
+            <span className="micro text-pac-tinta-suave">{lista.length} filas</span>
           </div>
 
-          <label className="mt-3 flex items-center gap-2 text-sm">
-            <input type="checkbox" name="activo" defaultChecked /> Activo
-          </label>
+          {lista.length === 0 ? (
+            <EstadoVacio
+              titulo="El catálogo está vacío"
+              descripcion="Crea la primera categoría y luego el primer producto. Los precios se cargan contra este catálogo, así que sin productos no hay nada que comparar."
+            />
+          ) : (
+            <ul className="divide-y divide-pac-linea border-y border-pac-linea bg-white">
+              {lista.map((p) => (
+                <li
+                  key={p.id_producto}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-[14px] font-bold leading-snug text-pac-tinta">
+                        {p.nombre}
+                      </p>
+                      <Insignia tono={p.activo ? "activo" : "inactivo"}>
+                        {p.activo ? "Activo" : "Inactivo"}
+                      </Insignia>
+                    </div>
+                    <p className="mt-1 text-[12px] text-pac-tinta-suave">
+                      {p.marca} · {p.formato} · {p.unidad}
+                      <span className="mx-1.5 text-pac-linea-fuerte">|</span>
+                      <span className="text-pac-azul">
+                        {p.categorias?.nombre ?? "Sin categoría"}
+                      </span>
+                    </p>
+                  </div>
 
-          <button
-            type="submit"
-            className="mt-4 w-full rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-          >
-            Crear
-          </button>
-        </form>
-      )}
-
-      <ul className="flex flex-col gap-2">
-        {lista.map((p) => (
-          <li
-            key={p.id_producto}
-            className="flex flex-wrap items-center justify-between gap-3 rounded border border-border bg-card p-3"
-          >
-            <div>
-              <strong>{p.nombre}</strong>
-              <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                {p.marca} · {p.formato} · {p.unidad}
-              </span>
-              <span
-                className={`ml-2 rounded px-1.5 py-0.5 text-xs ${
-                  p.activo
-                    ? "bg-pac-verde/10 text-pac-verde"
-                    : "bg-pac-naranjo/10 text-pac-naranjo"
-                }`}
-              >
-                {p.activo ? "activo" : "inactivo"}
-              </span>
-              <div className="text-xs text-pac-celeste">
-                {p.categorias?.nombre ?? "Sin categoría"}
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <Link
-                href={`/admin/productos/${p.id_producto}/editar`}
-                className="rounded border border-border px-3 py-1 text-sm font-medium transition-colors hover:bg-muted"
-              >
-                Editar
-              </Link>
-              {p.activo && (
-                <form action={desactivarProducto}>
-                  <input type="hidden" name="id" value={p.id_producto} />
-                  <button
-                    type="submit"
-                    className="rounded border border-pac-rojo px-3 py-1 text-sm font-medium text-pac-rojo transition-colors hover:bg-pac-rojo/10"
-                  >
-                    Desactivar
-                  </button>
-                </form>
-              )}
-            </div>
-          </li>
-        ))}
-        {lista.length === 0 && (
-          <p className="text-sm text-muted-foreground">No hay productos todavía.</p>
-        )}
-      </ul>
-    </main>
+                  <div className="flex shrink-0 gap-2">
+                    <BotonEnlace
+                      href={`/admin/productos/${p.id_producto}/editar`}
+                      tamano="sm"
+                      variante="contorno"
+                    >
+                      Editar
+                    </BotonEnlace>
+                    {p.activo && (
+                      <form action={desactivarProducto}>
+                        <input type="hidden" name="id" value={p.id_producto} />
+                        <Boton type="submit" tamano="sm" variante="peligro">
+                          Desactivar
+                        </Boton>
+                      </form>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </Contenedor>
   );
 }

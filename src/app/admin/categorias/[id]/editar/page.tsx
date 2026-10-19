@@ -1,6 +1,11 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { actualizarCategoria } from "../../acciones";
+import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
+import { Panel } from "@/components/ui/panel";
+import { Boton, BotonEnlace } from "@/components/ui/boton";
+import { Campo, Casilla, Entrada } from "@/components/ui/campo";
+
+export const metadata = { title: "Editar categoría" };
 
 export default async function EditarCategoriaPage({
   params,
@@ -17,54 +22,74 @@ export default async function EditarCategoriaPage({
 
   if (!categoria) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-xl bg-background p-6">
-        <p>Categoría no encontrada.</p>
-        <Link href="/admin/categorias" className="text-sm text-pac-celeste hover:underline">
-          ← Volver
-        </Link>
-      </main>
+      <Contenedor ancho="angosto">
+        <div className="py-14">
+          <EstadoVacio
+            titulo="Categoría no encontrada"
+            descripcion="El identificador de la URL no corresponde a ninguna categoría del catálogo."
+            accion={
+              <BotonEnlace href="/admin/categorias" variante="contorno" tamano="sm">
+                Volver a categorías
+              </BotonEnlace>
+            }
+          />
+        </div>
+      </Contenedor>
     );
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-xl bg-background p-6">
-      <Link
-        href="/admin/categorias"
-        className="text-sm text-pac-celeste transition-colors hover:underline"
-      >
-        ← Volver
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Editar categoría</h1>
+    <Contenedor ancho="angosto">
+      <EncabezadoPagina
+        miga={[
+          { etiqueta: "Inicio", href: "/" },
+          { etiqueta: "Panel", href: "/admin" },
+          { etiqueta: "Categorías", href: "/admin/categorias" },
+          { etiqueta: "Editar" },
+        ]}
+        eyebrow={`Categoría #${categoria.id_categoria}`}
+        titulo="Editar categoría"
+        descripcion="Renombrar una categoría afecta cómo se agrupa el catálogo en el comparador público."
+      />
 
-      <form
-        action={actualizarCategoria}
-        className="mt-4 rounded-lg border border-border bg-card p-4"
-      >
-        <div className="flex flex-col gap-3">
+      <Panel acento="azul" className="my-8">
+        <form action={actualizarCategoria}>
           <input type="hidden" name="id" value={categoria.id_categoria} />
-          <input
-            name="nombre"
-            required
-            defaultValue={categoria.nombre}
-            className="w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
-          />
-          <input
-            name="descripcion"
-            defaultValue={categoria.descripcion ?? ""}
-            placeholder="Descripción (opcional)"
-            className="w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30"
-          />
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="activo" defaultChecked={categoria.activo} /> Activa
-          </label>
-          <button
-            type="submit"
-            className="rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-          >
-            Guardar
-          </button>
-        </div>
-      </form>
-    </main>
+
+          <div className="flex flex-col gap-4 p-5">
+            <Campo etiqueta="Nombre" para="nombre" requerido>
+              <Entrada
+                id="nombre"
+                name="nombre"
+                required
+                defaultValue={categoria.nombre}
+              />
+            </Campo>
+
+            <Campo etiqueta="Descripción" para="descripcion" ayuda="Opcional.">
+              <Entrada
+                id="descripcion"
+                name="descripcion"
+                defaultValue={categoria.descripcion ?? ""}
+                placeholder="Productos de panadería y masas"
+              />
+            </Campo>
+
+            <Casilla
+              etiqueta="Activa"
+              name="activo"
+              defaultChecked={categoria.activo}
+            />
+          </div>
+
+          <div className="flex flex-wrap justify-end gap-2 border-t border-pac-linea bg-pac-fondo/50 px-5 py-3.5">
+            <BotonEnlace href="/admin/categorias" variante="fantasma">
+              Cancelar
+            </BotonEnlace>
+            <Boton type="submit">Guardar cambios</Boton>
+          </div>
+        </form>
+      </Panel>
+    </Contenedor>
   );
 }

@@ -1,10 +1,12 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { TIPOS_COMERCIO } from "@/lib/tipos_comercio";
 import { actualizarComercio } from "../../acciones";
+import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
+import { Panel } from "@/components/ui/panel";
+import { Boton, BotonEnlace } from "@/components/ui/boton";
+import { Campo, Casilla, Entrada, Selector } from "@/components/ui/campo";
 
-const CAMPO =
-  "w-full rounded border border-input p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30";
+export const metadata = { title: "Editar comercio" };
 
 export default async function EditarComercioPage({
   params,
@@ -28,12 +30,19 @@ export default async function EditarComercioPage({
 
   if (!comercio) {
     return (
-      <main className="mx-auto min-h-screen w-full max-w-xl bg-background p-6">
-        <p>Comercio no encontrado.</p>
-        <Link href="/admin/comercios" className="text-sm text-pac-celeste hover:underline">
-          ← Volver
-        </Link>
-      </main>
+      <Contenedor ancho="angosto">
+        <div className="py-14">
+          <EstadoVacio
+            titulo="Comercio no encontrado"
+            descripcion="El identificador de la URL no corresponde a ningún comercio registrado."
+            accion={
+              <BotonEnlace href="/admin/comercios" variante="contorno" tamano="sm">
+                Volver a comercios
+              </BotonEnlace>
+            }
+          />
+        </div>
+      </Contenedor>
     );
   }
 
@@ -54,108 +63,116 @@ export default async function EditarComercioPage({
   );
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-xl bg-background p-6">
-      <Link
-        href="/admin/comercios"
-        className="text-sm text-pac-celeste transition-colors hover:underline"
-      >
-        ← Volver
-      </Link>
-      <h1 className="mt-2 text-2xl font-bold text-pac-azul">Editar comercio</h1>
+    <Contenedor ancho="angosto">
+      <EncabezadoPagina
+        miga={[
+          { etiqueta: "Inicio", href: "/" },
+          { etiqueta: "Panel", href: "/admin" },
+          { etiqueta: "Comercios", href: "/admin/comercios" },
+          { etiqueta: "Editar" },
+        ]}
+        eyebrow={`Comercio #${comercio.id_comercio}`}
+        titulo="Editar comercio"
+        descripcion="Mover las coordenadas fuera del polígono comunal impide guardar."
+      />
 
-      <form
-        action={actualizarComercio}
-        className="mt-4 rounded-lg border border-border bg-card p-4"
-      >
-        <input type="hidden" name="id" value={comercio.id_comercio ?? ""} />
+      <Panel acento="azul" className="my-8">
+        <form action={actualizarComercio}>
+          <input type="hidden" name="id" value={comercio.id_comercio ?? ""} />
 
-        <div className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1 text-sm">
-            Nombre
-            <input
-              name="nombre"
-              required
-              defaultValue={comercio.nombre ?? ""}
-              className={CAMPO}
-            />
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            Dirección
-            <input
-              name="direccion"
-              required
-              defaultValue={comercio.direccion ?? ""}
-              className={CAMPO}
-            />
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            Tipo
-            <select name="tipo" required defaultValue={comercio.tipo ?? ""} className={CAMPO}>
-              {TIPOS_COMERCIO.map((t) => (
-                <option key={t.valor} value={t.valor}>
-                  {t.etiqueta}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            Sucursal de
-            <select
-              name="id_matriz"
-              defaultValue={comercio.id_matriz ?? ""}
-              className={CAMPO}
-            >
-              <option value="">Es matriz o local independiente</option>
-              {candidatas.map((c) => (
-                <option key={c.id_comercio} value={c.id_comercio}>
-                  {c.nombre}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="grid grid-cols-2 gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              Latitud
-              <input
-                name="lat"
-                type="number"
-                step="0.000001"
+          <div className="flex flex-col gap-4 p-5">
+            <Campo etiqueta="Nombre" para="nombre" requerido>
+              <Entrada
+                id="nombre"
+                name="nombre"
                 required
-                defaultValue={comercio.lat ?? ""}
-                className={CAMPO}
+                defaultValue={comercio.nombre ?? ""}
               />
-            </label>
+            </Campo>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Longitud
-              <input
-                name="lng"
-                type="number"
-                step="0.000001"
+            <Campo etiqueta="Dirección" para="direccion" requerido>
+              <Entrada
+                id="direccion"
+                name="direccion"
                 required
-                defaultValue={comercio.lng ?? ""}
-                className={CAMPO}
+                defaultValue={comercio.direccion ?? ""}
               />
-            </label>
+            </Campo>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Campo etiqueta="Tipo" para="tipo" requerido>
+                <Selector
+                  id="tipo"
+                  name="tipo"
+                  required
+                  defaultValue={comercio.tipo ?? ""}
+                >
+                  {TIPOS_COMERCIO.map((t) => (
+                    <option key={t.valor} value={t.valor}>
+                      {t.etiqueta}
+                    </option>
+                  ))}
+                </Selector>
+              </Campo>
+
+              <Campo etiqueta="Sucursal de" para="id_matriz">
+                <Selector
+                  id="id_matriz"
+                  name="id_matriz"
+                  defaultValue={comercio.id_matriz ?? ""}
+                >
+                  <option value="">Es matriz o local independiente</option>
+                  {candidatas.map((c) => (
+                    <option key={c.id_comercio} value={c.id_comercio}>
+                      {c.nombre}
+                    </option>
+                  ))}
+                </Selector>
+              </Campo>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Campo etiqueta="Latitud" para="lat" requerido>
+                <Entrada
+                  id="lat"
+                  name="lat"
+                  type="number"
+                  step="0.000001"
+                  inputMode="decimal"
+                  required
+                  defaultValue={comercio.lat ?? ""}
+                  className="cifra"
+                />
+              </Campo>
+              <Campo etiqueta="Longitud" para="lng" requerido>
+                <Entrada
+                  id="lng"
+                  name="lng"
+                  type="number"
+                  step="0.000001"
+                  inputMode="decimal"
+                  required
+                  defaultValue={comercio.lng ?? ""}
+                  className="cifra"
+                />
+              </Campo>
+            </div>
+
+            <Casilla
+              etiqueta="Activo"
+              name="activo"
+              defaultChecked={comercio.activo ?? false}
+            />
           </div>
 
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="activo" defaultChecked={comercio.activo ?? false} />{" "}
-            Activo
-          </label>
-
-          <button
-            type="submit"
-            className="rounded bg-primary py-2 font-semibold text-primary-foreground transition-colors hover:bg-pac-azul-oscuro"
-          >
-            Guardar
-          </button>
-        </div>
-      </form>
-    </main>
+          <div className="flex flex-wrap justify-end gap-2 border-t border-pac-linea bg-pac-fondo/50 px-5 py-3.5">
+            <BotonEnlace href="/admin/comercios" variante="fantasma">
+              Cancelar
+            </BotonEnlace>
+            <Boton type="submit">Guardar cambios</Boton>
+          </div>
+        </form>
+      </Panel>
+    </Contenedor>
   );
 }
