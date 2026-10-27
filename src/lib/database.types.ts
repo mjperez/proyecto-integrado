@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.17"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       aliases: {
@@ -176,6 +201,8 @@ export type Database = {
           id_comercio: number
           id_precio: number
           id_producto: number
+          origen: string
+          validado: boolean
           valor: number
           vigente_desde: string
           vigente_hasta: string | null
@@ -186,6 +213,8 @@ export type Database = {
           id_comercio: number
           id_precio?: never
           id_producto: number
+          origen?: string
+          validado?: boolean
           valor: number
           vigente_desde?: string
           vigente_hasta?: string | null
@@ -196,6 +225,8 @@ export type Database = {
           id_comercio?: number
           id_precio?: never
           id_producto?: number
+          origen?: string
+          validado?: boolean
           valor?: number
           vigente_desde?: string
           vigente_hasta?: string | null
@@ -574,6 +605,25 @@ export type Database = {
         }
         Relationships: []
       }
+      v_historial_precio: {
+        Row: {
+          comercios: number | null
+          fecha: string | null
+          id_producto: number | null
+          maximo: number | null
+          minimo: number | null
+          promedio: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "precios_id_producto_fkey"
+            columns: ["id_producto"]
+            isOneToOne: false
+            referencedRelation: "productos"
+            referencedColumns: ["id_producto"]
+          },
+        ]
+      }
       v_precio_actual: {
         Row: {
           fecha_registro: string | null
@@ -777,6 +827,22 @@ export type Database = {
         | { Args: { table_name: string }; Returns: string }
       enablelongtransactions: { Args: never; Returns: string }
       equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      fn_comparador: {
+        Args: { p_lat?: number; p_lng?: number; p_producto: number }
+        Returns: {
+          comercio: string
+          direccion: string
+          distancia_m: number
+          fecha_registro: string
+          id_comercio: number
+          origen: string
+          ref_lat: number
+          ref_lng: number
+          ref_origen: string
+          tipo: string
+          valor: number
+        }[]
+      }
       fn_payload_auditoria: {
         Args: {
           p_accion: string
@@ -1665,6 +1731,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },
