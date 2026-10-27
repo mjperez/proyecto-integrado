@@ -110,6 +110,8 @@ export async function cargarCsv(
     id_producto: number;
     id_comercio: number;
     valor: number;
+    origen: string;
+    validado: boolean;
   }[] = [];
   const vistos = new Map<number, number>();
 
@@ -165,6 +167,8 @@ export async function cargarCsv(
       id_producto: producto.id_producto,
       id_comercio: idComercio,
       valor,
+      origen: "csv",
+      validado: true,
     });
   }
 

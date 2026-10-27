@@ -223,6 +223,10 @@ export default function MapaComercios() {
       id_comercio: idComercioDestino,
       valor,
       fecha_registro: new Date().toISOString(),
+      // US-D1: el comparador solo publica precios validados. Lo que entra por el
+      // formulario lo carga un usuario con rol, así que nace validado.
+      origen: "manual",
+      validado: true,
     });
     setGuardando(false);
 
