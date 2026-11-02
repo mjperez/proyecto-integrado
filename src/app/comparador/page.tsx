@@ -308,6 +308,11 @@ export default function Comparador() {
                     </dl>
                   </div>
 
+                  <p className="mb-3 border-l-2 border-pac-rojo bg-pac-rojo-tenue px-3 py-2 text-[11.5px] leading-relaxed text-pac-tinta">
+                    Precios de demostración. No corresponden a valores reales de
+                    la comuna.
+                  </p>
+
                   {/* Orden y punto de referencia */}
                   <div className="mb-3 flex flex-wrap items-center gap-2 border border-pac-linea bg-white px-3 py-2.5">
                     <span className="micro mr-1 text-pac-tinta-suave">Ordenar por</span>

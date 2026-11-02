@@ -67,8 +67,8 @@ export function Pie() {
             Proyecto académico TIHI43 · INACAP 2026
           </p>
           <p className="text-[11px] text-white/70">
-            Precios referenciales, relevados en terreno y actualizados
-            semanalmente.
+            Versión de demostración: los precios son de prueba y no corresponden
+            a valores reales de la comuna.
           </p>
         </div>
       </div>

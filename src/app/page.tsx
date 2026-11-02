@@ -84,7 +84,7 @@ function fechaCorta(iso: string) {
 }
 
 function fechaLarga(iso: string | null) {
-  if (!iso) return "sin relevamientos";
+  if (!iso) return "sin registros";
   return new Date(iso).toLocaleDateString("es-CL", {
     day: "numeric",
     month: "long",
@@ -147,7 +147,7 @@ export default async function Portada() {
     <>
       <BarraSuperior
         fija
-        nota={`Último relevamiento: ${fechaLarga(d.ultima)} · ${d.precios.toLocaleString(
+        nota={`Última actualización: ${fechaLarga(d.ultima)} · ${d.precios.toLocaleString(
           "es-CL",
         )} precios en ${d.comercios} comercios`}
       />
@@ -164,7 +164,7 @@ export default async function Portada() {
                   Cuánto cuesta comprar en Pedro Aguirre Cerda
                 </h1>
                 <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/70">
-                  Precios de alimentos y productos básicos relevados en terreno
+                  Precios de alimentos y productos básicos registrados en terreno
                   por el municipio, comercio por comercio y con la fecha de cada
                   registro.
                 </p>
@@ -355,7 +355,7 @@ export default async function Portada() {
 
             <div className="flex flex-wrap items-center justify-between gap-2 py-5">
               <p className="max-w-2xl text-[11px] leading-relaxed text-pac-tinta-suave">
-                Precios referenciales del último relevamiento de cada comercio.
+                Precios referenciales del último registro de cada comercio.
                 No constituyen una oferta comercial.
               </p>
               <Link

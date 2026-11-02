@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s · Observatorio de Precios",
   },
   description:
-    "Precios de alimentos y productos básicos en los comercios de Pedro Aguirre Cerda, relevados por la Municipalidad.",
+    "Precios de alimentos y productos básicos en los comercios de Pedro Aguirre Cerda, registrados por la Municipalidad.",
   applicationName: "Observatorio de Precios",
 };
 

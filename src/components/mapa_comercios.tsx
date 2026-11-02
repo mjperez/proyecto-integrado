@@ -290,7 +290,7 @@ export default function MapaComercios() {
               Selecciona un comercio en el mapa
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-pac-tinta-suave">
-              Cada punto corresponde a un almacén, feria o negocio relevado por
+              Cada punto corresponde a un almacén, feria o negocio registrado por
               el municipio. Al elegirlo verás su dirección y los precios
               vigentes.
             </p>
