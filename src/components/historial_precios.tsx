@@ -213,6 +213,36 @@ export function HistorialPrecios({ idProducto }: { idProducto: number }) {
           </svg>
         </div>
 
+        {/* Alternativa textual de la serie. Un lector de pantalla no puede
+            recorrer la gráfica, así que los mismos datos se ofrecen como tabla
+            solo para lectores: el gráfico queda oculto para ellos y viceversa. */}
+        <table className="sr-only">
+          <caption>
+            Precios semanales del producto entre {fechaCorta(serie[0].fecha)} y{" "}
+            {fechaCorta(ultimo.fecha)}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Mínimo</th>
+              <th scope="col">Promedio</th>
+              <th scope="col">Máximo</th>
+              <th scope="col">Comercios</th>
+            </tr>
+          </thead>
+          <tbody>
+            {serie.map((p) => (
+              <tr key={p.fecha}>
+                <th scope="row">{fechaCorta(p.fecha)}</th>
+                <td>{pesos(p.minimo)}</td>
+                <td>{pesos(p.promedio)}</td>
+                <td>{pesos(p.maximo)}</td>
+                <td>{p.comercios}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
         <p className="border-t border-pac-linea px-5 py-3 text-[11px] leading-relaxed text-pac-tinta-suave">
           Cada punto promedia el precio vigente de los {ultimo.comercios} comercios
           que registraron este producto en esa fecha. Datos de prueba.
