@@ -16,7 +16,8 @@ export default function MapaPage() {
   return (
     <div className="flex h-[100dvh] flex-col">
       <BarraSuperior fija />
-      <main className="flex min-h-0 flex-1 flex-col">
+      <main id="contenido" className="flex min-h-0 flex-1 flex-col">
+        <h1 className="sr-only">Mapa de comercios de Pedro Aguirre Cerda</h1>
         <MapaComercios />
       </main>
     </div>

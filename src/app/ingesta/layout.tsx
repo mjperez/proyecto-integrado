@@ -9,7 +9,7 @@ export default function IngestaLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <BarraSuperior fija />
-      <main className="flex-1">{children}</main>
+      <main id="contenido" className="flex-1">{children}</main>
       <Pie />
     </div>
   );

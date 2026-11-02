@@ -14,7 +14,7 @@ export default async function AdminLayout({
     <div className="flex min-h-screen flex-col">
       <BarraSuperior fija />
       <NavModulos />
-      <main className="flex-1 bg-pac-fondo/40">{children}</main>
+      <main id="contenido" className="flex-1 bg-pac-fondo/40">{children}</main>
       <Pie />
     </div>
   );

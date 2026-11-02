@@ -8,7 +8,7 @@ export default function SinAccesoPage() {
     <div className="flex min-h-screen flex-col">
       <BarraSuperior />
 
-      <main className="flex flex-1 items-center justify-center px-6 py-16">
+      <main id="contenido" className="flex flex-1 items-center justify-center px-6 py-16">
         <div className="w-full max-w-md">
           <div className="mb-5 h-[3px] w-14 bg-pac-rojo" />
           <h1 className="text-[28px] leading-tight text-pac-azul">

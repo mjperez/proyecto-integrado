@@ -178,7 +178,7 @@ export default function Comparador() {
     <>
       <BarraSuperior fija />
 
-      <main className="flex-1">
+      <main id="contenido" className="flex-1">
         <Contenedor ancho="amplio">
           <EncabezadoPagina
             miga={[{ etiqueta: "Inicio", href: "/" }, { etiqueta: "Comparador" }]}

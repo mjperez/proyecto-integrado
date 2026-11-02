@@ -75,7 +75,7 @@ export default async function DashboardPage() {
     <div className="flex min-h-screen flex-col">
       <BarraSuperior fija />
 
-      <main className="flex-1">
+      <main id="contenido" className="flex-1">
         <Contenedor>
           <EncabezadoPagina
             miga={[{ etiqueta: "Inicio", href: "/" }, { etiqueta: "Mi panel" }]}
