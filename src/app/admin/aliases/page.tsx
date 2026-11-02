@@ -56,7 +56,7 @@ export default async function AliasesPage({
           { etiqueta: "Panel", href: "/admin" },
           { etiqueta: "Aliases" },
         ]}
-        eyebrow="Normalización · US-A2"
+        eyebrow="Normalización"
         titulo="Aliases"
         descripcion={`${lista.length} sinónimos registrados. Cada alias resuelve un nombre del habla local contra una categoría o un producto canónico.`}
       />

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, ClipboardList, Table2 } from "lucide-react";
 import { requerirRol } from "@/lib/auth";
 import { Contenedor, EncabezadoPagina } from "@/components/ui/pagina";
-import { Etiqueta } from "@/components/ui/etiqueta";
 
 export const metadata = { title: "Carga de precios" };
 
@@ -11,7 +10,6 @@ const OPCIONES = [
     nombre: "Carga manual",
     href: "/mapa",
     desc: "Selecciona un comercio en el mapa y registra los precios uno por uno. Sirve para relevamientos puntuales o para corregir un valor.",
-    detalle: "US-C1",
     icono: ClipboardList,
     nota: "Un producto a la vez, con fecha automática.",
   },
@@ -19,7 +17,6 @@ const OPCIONES = [
     nombre: "Carga por planilla",
     href: "/ingesta/csv",
     desc: "Sube la planilla semanal en CSV. Cada fila se valida por separado y los errores se informan por número de línea.",
-    detalle: "US-C2",
     icono: Table2,
     nota: "Carga masiva con informe de errores.",
   },
@@ -54,7 +51,6 @@ export default async function IngestaPage() {
                   strokeWidth={1.5}
                   aria-hidden="true"
                 />
-                <Etiqueta>{o.detalle}</Etiqueta>
               </div>
 
               <h2 className="text-[18px] font-bold text-pac-azul">{o.nombre}</h2>

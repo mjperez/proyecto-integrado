@@ -50,7 +50,7 @@ export default async function ProductosPage({
           { etiqueta: "Panel", href: "/admin" },
           { etiqueta: "Productos" },
         ]}
-        eyebrow="Catálogo maestro · US-A1"
+        eyebrow="Catálogo maestro"
         titulo="Productos"
         descripcion={`${lista.length} productos registrados, ${activos} activos. Cada producto se identifica por nombre, marca, formato y unidad.`}
       />

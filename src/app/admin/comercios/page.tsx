@@ -45,7 +45,7 @@ export default async function ComerciosPage({
           { etiqueta: "Panel", href: "/admin" },
           { etiqueta: "Comercios" },
         ]}
-        eyebrow="Puntos de venta · US-B1"
+        eyebrow="Puntos de venta"
         titulo="Comercios"
         descripcion={`${lista.length} comercios registrados, ${activos} activos. Almacenes, ferias, minimarkets y microemprendimientos de la comuna, con matriz y sucursales.`}
       />

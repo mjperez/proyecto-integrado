@@ -3,14 +3,12 @@ import { ArrowUpRight } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { Contenedor, EncabezadoPagina } from "@/components/ui/pagina";
 import { Cifra } from "@/components/ui/panel";
-import { Insignia } from "@/components/ui/etiqueta";
 
 type Modulo = {
   nombre: string;
   total: number;
   desc: string;
   href: string;
-  detalle: string;
 };
 
 export const metadata = { title: "Panel de mantenedores" };
@@ -35,35 +33,30 @@ export default async function AdminPage() {
       total: productos.count ?? 0,
       desc: "Catálogo maestro con marca, formato y unidad canónicos.",
       href: "/admin/productos",
-      detalle: "US-A1",
     },
     {
       nombre: "Categorías",
       total: categorias.count ?? 0,
       desc: "Clasificación de nivel superior del catálogo.",
       href: "/admin/categorias",
-      detalle: "US-A3",
     },
     {
       nombre: "Comercios",
       total: comercios.count ?? 0,
       desc: "Matrices y sucursales con coordenadas dentro de la comuna.",
       href: "/admin/comercios",
-      detalle: "US-B1",
     },
     {
       nombre: "Aliases",
       total: aliases.count ?? 0,
       desc: "Sinónimos del habla local que resuelven contra el catálogo.",
       href: "/admin/aliases",
-      detalle: "US-A2",
     },
     {
       nombre: "Auditoría",
       total: auditoria.count ?? 0,
       desc: "Registro inmutable encadenado por hash.",
       href: "/admin/auditoria",
-      detalle: "US-F3",
     },
   ];
 
@@ -100,12 +93,9 @@ export default async function AdminPage() {
                 className="group flex items-center gap-4 px-4 py-4 transition-colors duration-150 hover:bg-pac-fondo/60"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-[14.5px] font-bold text-pac-tinta">
-                      {m.nombre}
-                    </h3>
-                    <Insignia>{m.detalle}</Insignia>
-                  </div>
+                  <h3 className="text-[14.5px] font-bold text-pac-tinta">
+                    {m.nombre}
+                  </h3>
                   <p className="mt-0.5 text-[13px] leading-snug text-pac-tinta-suave">
                     {m.desc}
                   </p>
@@ -125,8 +115,8 @@ export default async function AdminPage() {
         </ul>
 
         <p className="mt-3 text-[12px] leading-relaxed text-pac-tinta-suave">
-          Los cinco mantenedores corresponden a las historias del Sprint 1. Cada
-          alta y modificación queda registrada en la cadena de auditoría.
+          Cada alta, modificación o baja queda registrada en la cadena de
+          auditoría y no se puede alterar sin dejar rastro.
         </p>
       </section>
     </Contenedor>

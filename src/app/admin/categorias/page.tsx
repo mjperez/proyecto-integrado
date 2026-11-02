@@ -32,7 +32,7 @@ export default async function CategoriasPage({
           { etiqueta: "Panel", href: "/admin" },
           { etiqueta: "Categorías" },
         ]}
-        eyebrow="Catálogo maestro · US-A3"
+        eyebrow="Catálogo maestro"
         titulo="Categorías"
         descripcion={`${lista.length} categorías registradas, ${activas} activas. Agrupan el catálogo y sirven de destino para los aliases.`}
       />
