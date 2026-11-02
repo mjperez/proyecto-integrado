@@ -19,6 +19,9 @@
   --color-pac-rojo: #c32e26;
   --color-pac-rojo-oscuro: #a3251e;
   --color-pac-rojo-tenue: #fbeceb;
+  /* Variante para texto sobre el azul profundo: el rojo institucional sobre
+     #002842 da 2,7:1 y no alcanza AA. Esta da 8,5:1 y conserva el acento. */
+  --color-pac-rojo-claro: #eab6b3;
 
   --color-pac-verde: #9fc51e;
   --color-pac-naranjo: #f46c3c;

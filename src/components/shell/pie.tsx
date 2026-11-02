@@ -16,7 +16,7 @@ export function Pie() {
                 className="size-12 object-contain"
               />
               <div>
-                <p className="text-[9px] font-medium uppercase leading-none tracking-[0.18em] text-white/55">
+                <p className="text-[9px] font-medium uppercase leading-none tracking-[0.18em] text-white/70">
                   Municipalidad de
                 </p>
                 <p className="mt-1 text-[14px] font-bold leading-none">
@@ -32,7 +32,7 @@ export function Pie() {
           </div>
 
           <div>
-            <p className="micro mb-3 text-white/45">Consultar</p>
+            <p className="micro mb-3 text-white/70">Consultar</p>
             <ul className="flex flex-col gap-2 text-[13px]">
               <li>
                 <Link href="/mapa" className="text-white/80 hover:text-white">
@@ -53,7 +53,7 @@ export function Pie() {
           </div>
 
           <div>
-            <p className="micro mb-3 text-white/45">Contacto</p>
+            <p className="micro mb-3 text-white/70">Contacto</p>
             <ul className="flex flex-col gap-2 text-[13px] text-white/70">
               <li>Av. P. Salvador Allende G. 2029</li>
               <li>Pedro Aguirre Cerda, Santiago</li>
@@ -63,10 +63,10 @@ export function Pie() {
         </div>
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-white/15 pt-5">
-          <p className="text-[11px] text-white/50">
+          <p className="text-[11px] text-white/70">
             Proyecto académico TIHI43 · INACAP 2026
           </p>
-          <p className="text-[11px] text-white/50">
+          <p className="text-[11px] text-white/70">
             Precios referenciales, relevados en terreno y actualizados
             semanalmente.
           </p>

@@ -152,14 +152,14 @@ export default async function Portada() {
         )} precios en ${d.comercios} comercios`}
       />
 
-      <main className="flex-1">
+      <main id="contenido" className="flex-1">
         {/* Hero a sangre con el bloque de destacados al costado, igual que la
             portada del municipio: contenido a la izquierda, accesos en rojo. */}
         <section className="bg-pac-azul-profundo">
           <div className="mx-auto w-full max-w-6xl">
             <div className="grid lg:grid-cols-[1fr_320px]">
               <div className="px-5 py-14 sm:px-8 lg:py-20">
-                <p className="micro mb-4 text-pac-rojo">Observatorio Comunal</p>
+                <p className="micro mb-4 text-pac-rojo-claro">Observatorio Comunal</p>
                 <h1 className="max-w-xl text-[clamp(1.9rem,3.8vw,3rem)] leading-[1.05] text-white">
                   Cuánto cuesta comprar en Pedro Aguirre Cerda
                 </h1>
@@ -226,7 +226,7 @@ export default async function Portada() {
                     href="/comparador"
                     className="group flex flex-col bg-pac-rojo px-4 py-5 text-white transition-colors duration-150 hover:bg-pac-rojo-oscuro"
                   >
-                    <p className="text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-white/65">
+                    <p className="text-[10px] font-bold uppercase leading-none tracking-[0.12em] text-white/90">
                       Desde
                     </p>
                     <p className="cifra mt-2 text-[24px] font-bold leading-none">
@@ -235,7 +235,7 @@ export default async function Portada() {
                     <p className="mt-3 line-clamp-2 text-[12px] font-bold uppercase leading-snug tracking-[0.04em]">
                       {g[0].productos?.nombre}
                     </p>
-                    <p className="mt-auto truncate pt-2 text-[11px] text-white/65">
+                    <p className="mt-auto truncate pt-2 text-[11px] text-white/90">
                       {g[0].comercios?.nombre} · {g.length} locales
                     </p>
                   </Link>

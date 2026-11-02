@@ -81,7 +81,7 @@ export function BarraSuperior({
                 className="size-[52px] object-contain"
               />
               <span className="hidden flex-col sm:flex">
-                <span className="text-[8px] font-medium uppercase leading-none tracking-[0.2em] text-white/55">
+                <span className="text-[8px] font-medium uppercase leading-none tracking-[0.2em] text-white/75">
                   Municipalidad
                 </span>
                 <span className="mt-1 text-[15px] font-bold leading-none text-white">
