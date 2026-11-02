@@ -1,3 +1,4 @@
+import { cloneElement, isValidElement } from "react";
 import { cn } from "@/lib/utils";
 
 const BASE =
@@ -7,7 +8,19 @@ const BASE =
   "focus:border-pac-azul focus:outline-none focus:ring-2 focus:ring-pac-azul/15 " +
   "disabled:bg-pac-fondo disabled:text-pac-tinta-suave";
 
-/** Envoltura de campo: rótulo, control y ayuda. */
+type PropsControl = {
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+};
+
+/**
+ * Envoltura de campo: rótulo, control y mensaje.
+ *
+ * El mensaje se asocia al control con `aria-describedby` y el error marca
+ * `aria-invalid`, para que un lector de pantalla anuncie la ayuda o el error al
+ * enfocar el campo. Se clona el hijo en lugar de exigir esas props en cada
+ * formulario: hay una veintena de usos y ninguno debería repetir la asociación.
+ */
 export function Campo({
   etiqueta,
   para,
@@ -25,6 +38,23 @@ export function Campo({
   className?: string;
   children: React.ReactNode;
 }) {
+  const idMensaje = para ? `${para}-mensaje` : undefined;
+  const mensaje = error ?? ayuda;
+
+  // Solo se inyectan las props que corresponden: si no hay mensaje ni error, el
+  // control conserva las que haya puesto quien lo usa.
+  const propsControl: PropsControl = {};
+  if (mensaje) propsControl["aria-describedby"] = idMensaje;
+  if (error) propsControl["aria-invalid"] = true;
+
+  const control =
+    para && isValidElement(children) && Object.keys(propsControl).length > 0
+      ? cloneElement(
+          children as React.ReactElement<PropsControl>,
+          propsControl,
+        )
+      : children;
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       <label htmlFor={para} className="micro text-pac-tinta-suave">
@@ -35,12 +65,20 @@ export function Campo({
           </span>
         )}
       </label>
-      {children}
-      {error ? (
-        <p className="text-[12px] font-medium text-pac-rojo">{error}</p>
-      ) : ayuda ? (
-        <p className="text-[12px] leading-snug text-pac-tinta-suave">{ayuda}</p>
-      ) : null}
+      {control}
+      {mensaje && (
+        <p
+          id={idMensaje}
+          className={cn(
+            "text-[12px]",
+            error
+              ? "font-medium text-pac-rojo"
+              : "leading-snug text-pac-tinta-suave",
+          )}
+        >
+          {mensaje}
+        </p>
+      )}
     </div>
   );
 }

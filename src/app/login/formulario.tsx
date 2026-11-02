@@ -123,6 +123,7 @@ export default function Formulario() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={error ? true : undefined}
             required
           />
         </Campo>
@@ -134,6 +135,7 @@ export default function Formulario() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={error ? true : undefined}
             required
           />
         </Campo>
