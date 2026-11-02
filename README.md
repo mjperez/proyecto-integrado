@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Observatorio Comunal de Precios
 
-## Getting Started
+Aplicación web del proyecto TIHI43 (INACAP 2026). Publica los precios de alimentos y productos básicos relevados en los comercios de Pedro Aguirre Cerda, y entrega un panel de administración para mantener el catálogo y cargar precios.
 
-First, run the development server:
+## Stack
+
+Next.js 16 con App Router, React 19, Tailwind CSS 4 y Supabase (PostgreSQL con PostGIS, Auth y RLS).
+
+## Puesta en marcha
+
+Requiere Node 20 o superior.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación queda en `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Las credenciales de Supabase van en `.env.local`, que no se versiona:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+NEXT_PUBLIC_SUPABASE_URL=https://<proyecto>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+```
 
-## Learn More
+## Cuenta de demostración
 
-To learn more about Next.js, take a look at the following resources:
+| Correo | Contraseña | Rol |
+|---|---|---|
+| `demo@pac.cl` | `Demo.Pac.2026` | administrador |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Abre el panel en `/admin`, el tablero en `/dashboard` y la carga de precios en `/ingesta`. Es una cuenta de demostración: antes de publicar el sistema en producción hay que borrarla y crear las cuentas reales del municipio.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Rutas
 
-## Deploy on Vercel
+| Ruta | Acceso | Qué hace |
+|---|---|---|
+| `/` | público | Portada con los precios vigentes |
+| `/comparador` | público | Comparador por producto, orden por precio o cercanía, con historial |
+| `/mapa` | público | Mapa de comercios |
+| `/login` | público | Acceso funcionario |
+| `/dashboard` | sesión | Tablero de control |
+| `/ingesta` | comercio, terreno, administrador | Carga manual de precios |
+| `/ingesta/csv` | comercio, terreno, administrador | Carga masiva por planilla |
+| `/admin` | administrador | Mantenedores de catálogo, comercios y auditoría |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Base de datos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Las migraciones están en `supabase/migrations` y se aplican en orden con la CLI de Supabase:
+
+```bash
+npx supabase link --project-ref <ref>
+npx supabase db push
+```
+
+El esquema usa tablas en plural (`productos`, `comercios`, `precios`, `usuarios`) y columnas en singular. El comparador se resuelve en la función `fn_comparador`, que devuelve un precio vigente y validado por comercio con la distancia al punto del vecino o al centroide comunal.
+
+## Pruebas
+
+```bash
+npm test          # unitarias
+npm run lint      # eslint
+npx tsc --noEmit  # tipos
+npm run build     # compilación de producción
+```
+
+## Accesibilidad
+
+Las cuatro pantallas principales obtienen 100 en la categoría de accesibilidad de Lighthouse 12: portada, comparador, mapa y acceso. La verificación cubre contraste, nombres accesibles, jerarquía de encabezados y orden de tabulación.
+
+## Datos
+
+Los precios y comercios que trae la base son de demostración. Las direcciones son verosímiles pero no corresponden a comercios verificados en terreno.
