@@ -1,12 +1,12 @@
 import { createClient } from "@/utils/supabase/server";
-import { TIPOS_COMERCIO, etiquetaTipo } from "@/lib/tipos_comercio";
+import { etiquetaTipo } from "@/lib/tipos_comercio";
 import { crearComercio, desactivarComercio } from "./acciones";
 import { Contenedor, EncabezadoPagina, EstadoVacio } from "@/components/ui/pagina";
 import { Panel, PanelCabecera } from "@/components/ui/panel";
 import { Aviso } from "@/components/ui/aviso";
 import { Boton, BotonEnlace } from "@/components/ui/boton";
-import { Campo, Casilla, Entrada, Selector } from "@/components/ui/campo";
 import { Insignia } from "@/components/ui/etiqueta";
+import { FormularioComercio } from "@/components/formulario_comercio";
 
 const ERRORES: Record<string, string> = {
   incompleto: "Nombre y dirección son obligatorios.",
@@ -61,88 +61,13 @@ export default async function ComerciosPage({
           <Panel acento="azul">
             <PanelCabecera
               titulo="Nuevo comercio"
-              descripcion="Las coordenadas deben caer dentro del polígono comunal."
+              descripcion="Escribe la dirección y el sistema calcula la ubicación."
             />
-            <form action={crearComercio} className="flex flex-col gap-3.5 p-5">
-              <Campo etiqueta="Nombre" para="nombre" requerido>
-                <Entrada
-                  id="nombre"
-                  name="nombre"
-                  required
-                  placeholder="Almacén Doña Rosa"
-                />
-              </Campo>
-
-              <Campo etiqueta="Dirección" para="direccion" requerido>
-                <Entrada
-                  id="direccion"
-                  name="direccion"
-                  required
-                  placeholder="Av. Padre Esteban Gumucio 1230"
-                />
-              </Campo>
-
-              <Campo etiqueta="Tipo" para="tipo" requerido>
-                <Selector id="tipo" name="tipo" required defaultValue="">
-                  <option value="" disabled>
-                    Selecciona un tipo
-                  </option>
-                  {TIPOS_COMERCIO.map((t) => (
-                    <option key={t.valor} value={t.valor}>
-                      {t.etiqueta}
-                    </option>
-                  ))}
-                </Selector>
-              </Campo>
-
-              <Campo
-                etiqueta="Sucursal de"
-                para="id_matriz"
-                ayuda="Deja vacío si es matriz o local independiente."
-              >
-                <Selector id="id_matriz" name="id_matriz" defaultValue="">
-                  <option value="">Es matriz o local independiente</option>
-                  {matrices.map((m) => (
-                    <option key={m.id_comercio} value={m.id_comercio}>
-                      {m.nombre}
-                    </option>
-                  ))}
-                </Selector>
-              </Campo>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Campo etiqueta="Latitud" para="lat" requerido>
-                  <Entrada
-                    id="lat"
-                    name="lat"
-                    type="number"
-                    step="0.000001"
-                    inputMode="decimal"
-                    required
-                    placeholder="-33.4910"
-                    className="cifra"
-                  />
-                </Campo>
-                <Campo etiqueta="Longitud" para="lng" requerido>
-                  <Entrada
-                    id="lng"
-                    name="lng"
-                    type="number"
-                    step="0.000001"
-                    inputMode="decimal"
-                    required
-                    placeholder="-70.7120"
-                    className="cifra"
-                  />
-                </Campo>
-              </div>
-
-              <Casilla etiqueta="Activo" name="activo" defaultChecked />
-
-              <Boton type="submit" bloque className="mt-1">
-                Crear comercio
-              </Boton>
-            </form>
+            <FormularioComercio
+              accion={crearComercio}
+              matrices={matrices}
+              textoBoton="Crear comercio"
+            />
           </Panel>
         </div>
 
